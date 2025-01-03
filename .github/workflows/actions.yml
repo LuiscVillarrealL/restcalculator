@@ -33,7 +33,7 @@ jobs:
     - name: Super-linter
       uses: super-linter/super-linter@v7.2.1
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Ensure GITHUB_TOKEN is passed explicitly
 
     - name: Build with Maven
       run: mvn -B package --file pom.xml
