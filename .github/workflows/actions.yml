@@ -29,6 +29,8 @@ jobs:
         cache: maven
     - name: Super-Linter
       uses: super-linter/super-linter@v7.1.0
+      with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
     - name: Build with Maven
       run: mvn -B package --file pom.xml
 
