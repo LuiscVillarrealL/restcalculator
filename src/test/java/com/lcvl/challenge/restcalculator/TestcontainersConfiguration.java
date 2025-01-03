@@ -7,18 +7,20 @@ import org.testcontainers.kafka.KafkaContainer;
 import org.testcontainers.utility.DockerImageName;
 
 /**
- * 
+ * The Class TestcontainersConfiguration.
  */
 @TestConfiguration(proxyBeanMethods = false)
 class TestcontainersConfiguration {
 
-	/**
-	 * @return
-	 */
-	@Bean
-	@ServiceConnection
-	KafkaContainer kafkaContainer() {
-		return new KafkaContainer(DockerImageName.parse("apache/kafka-native:latest"));
-	}
+  /**
+   * Kafka container.
+   *
+   * @return the kafka container
+   */
+  @Bean
+  @ServiceConnection
+  KafkaContainer kafkaContainer() {
+    return new KafkaContainer(DockerImageName.parse("apache/kafka-native:latest"));
+  }
 
 }
