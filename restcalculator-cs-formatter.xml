@@ -3,9 +3,9 @@
    <profile kind="CodeFormatterProfile"
             name="CheckStyle-Generated restcalculator"
             version="10">
-      <setting id="org.eclipse.jdt.core.formatter.comment.line_length" value="100"/>
       <setting id="org.eclipse.jdt.core.formatter.insert_space_before_opening_brace_in_block"
                value="insert"/>
+      <setting id="org.eclipse.jdt.core.formatter.comment.line_length" value="100"/>
       <setting id="org.eclipse.jdt.core.formatter.insert_space_after_comma_in_enum_declarations"
                value="insert"/>
       <setting id="org.eclipse.jdt.core.formatter.insert_space_before_colon_in_conditional"
@@ -146,9 +146,9 @@
                value="insert"/>
       <setting id="org.eclipse.jdt.core.formatter.brace_position_for_anonymous_type_declaration"
                value="end_of_line"/>
-      <setting id="org.eclipse.jdt.core.formatter.tabulation.char" value="space"/>
       <setting id="org.eclipse.jdt.core.formatter.insert_space_before_question_in_wildcard"
                value="do not insert"/>
+      <setting id="org.eclipse.jdt.core.formatter.tabulation.char" value="space"/>
       <setting id="org.eclipse.jdt.core.formatter.insert_space_before_opening_paren_in_if"
                value="insert"/>
       <setting id="org.eclipse.jdt.core.formatter.lineSplit" value="100"/>
