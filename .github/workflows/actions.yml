@@ -44,10 +44,7 @@ jobs:
           JAVA_FILE_NAME: google_checks_custom.xml
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  
 
-    - name: List files in repository
-      run: cd ./calculator/src/main/java/com/lcvl/challenge/calculator
-          
-          
+  
     - name: Clean and Build with Maven
       run: mvn clean package --file pom.xml
       
