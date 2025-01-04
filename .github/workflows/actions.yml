@@ -21,7 +21,10 @@ jobs:
           echo "GITHUB_TOKEN is available"
         fi
 
-    - uses: actions/checkout@v4
+    - name: Checkout the repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
 
     - name: Set up JDK 17
       uses: actions/setup-java@v4
