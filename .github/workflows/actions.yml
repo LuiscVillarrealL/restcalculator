@@ -35,6 +35,7 @@ jobs:
       env:
           VALIDATE_ALL_CODEBASE: false
           VALIDATE_JAVA: true
+          LINTER_RULES_PATH: /
           JAVA_FILE_NAME: google_checks_custom.xml
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Ensure GITHUB_TOKEN is passed explicitly
 
