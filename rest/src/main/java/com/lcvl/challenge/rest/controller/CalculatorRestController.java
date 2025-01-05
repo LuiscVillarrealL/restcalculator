@@ -52,10 +52,93 @@ public class CalculatorRestController {
     kafkaMessageProducer
         .sendCalculationRequest(new CalculationRequest(requestId, OperationEnum.SUM, num1, num2));
 
+    return waitForResponse(requestId);
+  }
+
+  /**
+   * Gets the substraction.
+   *
+   * @param num1 the num 1
+   * @param num2 the num 2
+   * @param requestId the request id
+   * @return the substraction
+   */
+  @GetMapping(value = "/sub")
+  @ResponseStatus(HttpStatus.OK)
+  public ResponseEntity<ResultDto> getSubstraction(@RequestParam BigDecimal num1,
+      @RequestParam BigDecimal num2,
+      @RequestHeader(value = "Request-ID", required = false) String requestId) {
+
+    // Generate a unique identifier if not provided
+    if (requestId == null || requestId.isEmpty()) {
+      requestId = UUID.randomUUID().toString();
+    }
+
+    // Log the request
+    log.info("Request-ID: {}, Operation: substraction, Operands: a={}, b={}", requestId, num1,
+        num2);
+
+    kafkaMessageProducer.sendCalculationRequest(
+        new CalculationRequest(requestId, OperationEnum.SUBTRACT, num1, num2));
+
+    return waitForResponse(requestId);
+  }
+
+  @GetMapping(value = "/multi")
+  @ResponseStatus(HttpStatus.OK)
+  public ResponseEntity<ResultDto> getMultiplication(@RequestParam BigDecimal num1,
+      @RequestParam BigDecimal num2,
+      @RequestHeader(value = "Request-ID", required = false) String requestId) {
+
+    // Generate a unique identifier if not provided
+    if (requestId == null || requestId.isEmpty()) {
+      requestId = UUID.randomUUID().toString();
+    }
+
+    // Log the request
+    log.info("Request-ID: {}, Operation: multiplication, Operands: a={}, b={}", requestId, num1,
+        num2);
+
+    kafkaMessageProducer.sendCalculationRequest(
+        new CalculationRequest(requestId, OperationEnum.MULTIPLY, num1, num2));
+
+    return waitForResponse(requestId);
+  }
+
+  @GetMapping(value = "/div")
+  @ResponseStatus(HttpStatus.OK)
+  public ResponseEntity<ResultDto> getDivision(@RequestParam BigDecimal num1,
+      @RequestParam BigDecimal num2,
+      @RequestHeader(value = "Request-ID", required = false) String requestId) {
+
+    // Generate a unique identifier if not provided
+    if (requestId == null || requestId.isEmpty()) {
+      requestId = UUID.randomUUID().toString();
+    }
+
+    // Check for division by zero
+    if (num2.compareTo(BigDecimal.ZERO) == 0) {
+      log.warn("Request-ID: {}, Operation: division, Division by zero attempted with num1={}",
+          requestId, num1);
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+          .body(new ResultDto("Division by zero is not allowed"));
+    }
+
+    // Log the request
+    log.info("Request-ID: {}, Operation: division, Operands: num1={}, num2={}", requestId, num1,
+        num2);
+
+    kafkaMessageProducer.sendCalculationRequest(
+        new CalculationRequest(requestId, OperationEnum.DIVIDE, num1, num2));
+
+    return waitForResponse(requestId);
+  }
+
+  private ResponseEntity<ResultDto> waitForResponse(String requestId) {
     // Wait for the response
     try {
       CalculationResponse response = kafkaMessageConsumer.getResponseById(requestId, 5000);
-      
+
       if (response == null) {
         log.warn("No response received for Request-ID: {}", requestId);
         return ResponseEntity.status(HttpStatus.REQUEST_TIMEOUT)
@@ -73,100 +156,5 @@ public class CalculatorRestController {
           .body(new ResultDto("Internal error occurred"));
     }
   }
-
-//
-//  /**
-//   * Gets the substraction.
-//   *
-//   * @param num1 the num 1
-//   * @param num2 the num 2
-//   * @param requestId the request id
-//   * @return the substraction
-//   */
-//  @GetMapping(value = "/sub")
-//  @ResponseStatus(HttpStatus.OK)
-//  public ResponseEntity<ResultResponse> getSubstraction(@RequestParam BigDecimal num1,
-//      @RequestParam BigDecimal num2,
-//      @RequestHeader(value = "Request-ID", required = false) String requestId) {
-//
-//    // Generate a unique identifier if not provided
-//    if (requestId == null || requestId.isEmpty()) {
-//      requestId = UUID.randomUUID().toString();
-//    }
-//
-//    // Log the request
-//    log.info("Request-ID: {}, Operation: substraction, Operands: a={}, b={}", 
-//        requestId, num1, num2);
-//
-//    // Perform the calculation
-//    BigDecimal result = num1.subtract(num2);
-//
-//    // Create a response
-//    ResultResponse response = new ResultResponse(result);
-//
-//    return ResponseEntity.ok().header("Request-ID", requestId).body(response);
-//  }
-//
-//  /**
-//   * Gets the multiplication.
-//   *
-//   * @param num1 the num 1
-//   * @param num2 the num 2
-//   * @param requestId the request id
-//   * @return the multiplication
-//   */
-//  @GetMapping(value = "/multi")
-//  @ResponseStatus(HttpStatus.OK)
-//  public ResponseEntity<ResultResponse> getMultiplication(@RequestParam BigDecimal num1,
-//      @RequestParam BigDecimal num2,
-//      @RequestHeader(value = "Request-ID", required = false) String requestId) {
-//
-//    // Generate a unique identifier if not provided
-//    if (requestId == null || requestId.isEmpty()) {
-//      requestId = UUID.randomUUID().toString();
-//    }
-//
-//    // Log the request
-//    log.info("Request-ID: {}, Operation: sum, Operands: a={}, b={}", requestId, num1, num2);
-//
-//    // Perform the calculation
-//    BigDecimal result = num1.multiply(num2);
-//
-//    // Create a response
-//    ResultResponse response = new ResultResponse(result);
-//
-//    return ResponseEntity.ok().header("Request-ID", requestId).body(response);
-//  }
-//  
-//  /**
-//   * Gets the division.
-//   *
-//   * @param num1 the num 1
-//   * @param num2 the num 2
-//   * @param requestId the request id
-//   * @return the division
-//   */
-//  @GetMapping(value = "/div")
-//  @ResponseStatus(HttpStatus.OK)
-//  public ResponseEntity<ResultResponse> getDivision(@RequestParam BigDecimal num1,
-//      @RequestParam BigDecimal num2,
-//      @RequestHeader(value = "Request-ID", required = false) String requestId) {
-//
-//    // Generate a unique identifier if not provided
-//    if (requestId == null || requestId.isEmpty()) {
-//      requestId = UUID.randomUUID().toString();
-//    }
-//
-//    // Log the request
-//    log.info("Request-ID: {}, Operation: sum, Operands: a={}, b={}", requestId, num1, num2);
-//
-//    // Perform the calculation
-//    BigDecimal result = num1.divide(num2, 2, RoundingMode.HALF_UP);
-//
-//    // Create a response
-//    ResultResponse response = new ResultResponse(result);
-//
-//    return ResponseEntity.ok().header("Request-ID", requestId).body(response);
-//  }
 
 }

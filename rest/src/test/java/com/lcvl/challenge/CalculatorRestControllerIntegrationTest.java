@@ -86,6 +86,110 @@ class CalculatorRestControllerIntegrationTest {
   }
 
   @Test
+  void testGetSubtraction() throws Exception {
+    // Arrange
+    String requestId = "test-sub-id";
+    CalculationResponse mockResponse = new CalculationResponse();
+    mockResponse.setRequestId(requestId);
+    mockResponse.setResult(BigDecimal.valueOf(5));
+
+    // Mocking Kafka Consumer behavior
+    when(kafkaMessageConsumer.getResponseById(eq(requestId), anyLong())).thenReturn(mockResponse);
+
+    // Act & Assert
+    mockMvc
+        .perform(get("/api/calculator/sub").param("num1", "10").param("num2", "5")
+            .header("Request-ID", requestId).contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk()).andExpect(jsonPath("$.result").value("5"))
+        .andExpect(header().string("Request-ID", requestId));
+
+    // Verify KafkaProducer
+    ArgumentCaptor<CalculationRequest> captor = ArgumentCaptor.forClass(CalculationRequest.class);
+    verify(kafkaMessageProducer, times(1)).sendCalculationRequest(captor.capture());
+
+    CalculationRequest capturedRequest = captor.getValue();
+    assert capturedRequest.getNum1().equals(BigDecimal.TEN);
+    assert capturedRequest.getNum2().equals(BigDecimal.valueOf(5));
+    assert capturedRequest.getOperation() == OperationEnum.SUBTRACT;
+    assert capturedRequest.getRequestId().equals(requestId);
+  }
+
+  @Test
+  void testGetMultiplication() throws Exception {
+    // Arrange
+    String requestId = "test-multi-id";
+    CalculationResponse mockResponse = new CalculationResponse();
+    mockResponse.setRequestId(requestId);
+    mockResponse.setResult(BigDecimal.valueOf(50));
+
+    // Mocking Kafka Consumer behavior
+    when(kafkaMessageConsumer.getResponseById(eq(requestId), anyLong())).thenReturn(mockResponse);
+
+    // Act & Assert
+    mockMvc
+        .perform(get("/api/calculator/multi").param("num1", "10").param("num2", "5")
+            .header("Request-ID", requestId).contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk()).andExpect(jsonPath("$.result").value("50"))
+        .andExpect(header().string("Request-ID", requestId));
+
+    // Verify KafkaProducer
+    ArgumentCaptor<CalculationRequest> captor = ArgumentCaptor.forClass(CalculationRequest.class);
+    verify(kafkaMessageProducer, times(1)).sendCalculationRequest(captor.capture());
+
+    CalculationRequest capturedRequest = captor.getValue();
+    assert capturedRequest.getNum1().equals(BigDecimal.TEN);
+    assert capturedRequest.getNum2().equals(BigDecimal.valueOf(5));
+    assert capturedRequest.getOperation() == OperationEnum.MULTIPLY;
+    assert capturedRequest.getRequestId().equals(requestId);
+  }
+
+  @Test
+  void testGetDivision() throws Exception {
+    // Arrange
+    String requestId = "test-div-id";
+    CalculationResponse mockResponse = new CalculationResponse();
+    mockResponse.setRequestId(requestId);
+    mockResponse.setResult(BigDecimal.valueOf(2));
+
+    // Mocking Kafka Consumer behavior
+    when(kafkaMessageConsumer.getResponseById(eq(requestId), anyLong())).thenReturn(mockResponse);
+
+    // Act & Assert
+    mockMvc
+        .perform(get("/api/calculator/div").param("num1", "10").param("num2", "5")
+            .header("Request-ID", requestId).contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk()).andExpect(jsonPath("$.result").value("2"))
+        .andExpect(header().string("Request-ID", requestId));
+
+    // Verify KafkaProducer
+    ArgumentCaptor<CalculationRequest> captor = ArgumentCaptor.forClass(CalculationRequest.class);
+    verify(kafkaMessageProducer, times(1)).sendCalculationRequest(captor.capture());
+
+    CalculationRequest capturedRequest = captor.getValue();
+    assert capturedRequest.getNum1().equals(BigDecimal.TEN);
+    assert capturedRequest.getNum2().equals(BigDecimal.valueOf(5));
+    assert capturedRequest.getOperation() == OperationEnum.DIVIDE;
+    assert capturedRequest.getRequestId().equals(requestId);
+  }
+
+  @Test
+  void testGetDivisionByZero() throws Exception {
+    // Arrange
+    String requestId = "test-div-zero-id";
+
+    // Mocking Kafka Consumer behavior for an error scenario
+    when(kafkaMessageConsumer.getResponseById(eq(requestId), anyLong()))
+        .thenThrow(new ArithmeticException("Division by zero"));
+
+    // Act & Assert
+    mockMvc
+        .perform(get("/api/calculator/div").param("num1", "10").param("num2", "0")
+            .header("Request-ID", requestId).contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().is4xxClientError())
+        .andExpect(jsonPath("$.result").value("Division by zero is not allowed"));
+  }
+
+  @Test
   void testGetSumTimeout() throws Exception {
     // Arrange
     String requestId = "test-timeout-id";
