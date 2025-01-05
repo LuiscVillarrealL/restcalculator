@@ -1,8 +1,8 @@
 package com.lcvl.challenge.rest.controller;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.UUID;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,7 +11,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import com.lcvl.challenge.rest.dto.ResultResponse;
+import com.lcvl.challenge.rest.dto.CalculationRequest;
+import com.lcvl.challenge.rest.dto.CalculationResponse;
+import com.lcvl.challenge.rest.dto.ResultDto;
+import com.lcvl.challenge.rest.messaging.KafkaMessageConsumer;
+import com.lcvl.challenge.rest.messaging.KafkaMessageProducer;
+import com.lcvl.challenge.util.OperationEnum;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -23,18 +28,16 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Slf4j
 public class CalculatorRestController {
-  
-  /**
-   * Gets the sum.
-   *
-   * @param num1 the num 1
-   * @param num2 the num 2
-   * @param requestId the request id
-   * @return the sum
-   */
+
+  @Autowired
+  private KafkaMessageProducer kafkaMessageProducer;
+
+  @Autowired
+  private KafkaMessageConsumer kafkaMessageConsumer;
+
   @GetMapping(value = "/sum")
   @ResponseStatus(HttpStatus.OK)
-  public ResponseEntity<ResultResponse> getSum(@RequestParam BigDecimal num1,
+  public ResponseEntity<ResultDto> getSum(@RequestParam BigDecimal num1,
       @RequestParam BigDecimal num2,
       @RequestHeader(value = "Request-ID", required = false) String requestId) {
 
@@ -46,13 +49,10 @@ public class CalculatorRestController {
     // Log the request
     log.info("Request-ID: {}, Operation: sum, Operands: num1={}, num2={}", requestId, num1, num2);
 
-    // Perform the calculation
-    BigDecimal result = num1.add(num2);
+    kafkaMessageProducer
+        .sendCalculationRequest(new CalculationRequest(requestId, OperationEnum.SUM, num1, num2));
 
-    // Create a response
-    ResultResponse response = new ResultResponse(result);
-
-    return ResponseEntity.ok().header("Request-ID", requestId).body(response);
+    return waitForResponse(requestId);
   }
 
   /**
@@ -65,7 +65,7 @@ public class CalculatorRestController {
    */
   @GetMapping(value = "/sub")
   @ResponseStatus(HttpStatus.OK)
-  public ResponseEntity<ResultResponse> getSubstraction(@RequestParam BigDecimal num1,
+  public ResponseEntity<ResultDto> getSubstraction(@RequestParam BigDecimal num1,
       @RequestParam BigDecimal num2,
       @RequestHeader(value = "Request-ID", required = false) String requestId) {
 
@@ -75,29 +75,18 @@ public class CalculatorRestController {
     }
 
     // Log the request
-    log.info("Request-ID: {}, Operation: substraction, Operands: a={}, b={}", 
-        requestId, num1, num2);
+    log.info("Request-ID: {}, Operation: substraction, Operands: a={}, b={}", requestId, num1,
+        num2);
 
-    // Perform the calculation
-    BigDecimal result = num1.subtract(num2);
+    kafkaMessageProducer.sendCalculationRequest(
+        new CalculationRequest(requestId, OperationEnum.SUBTRACT, num1, num2));
 
-    // Create a response
-    ResultResponse response = new ResultResponse(result);
-
-    return ResponseEntity.ok().header("Request-ID", requestId).body(response);
+    return waitForResponse(requestId);
   }
 
-  /**
-   * Gets the multiplication.
-   *
-   * @param num1 the num 1
-   * @param num2 the num 2
-   * @param requestId the request id
-   * @return the multiplication
-   */
   @GetMapping(value = "/multi")
   @ResponseStatus(HttpStatus.OK)
-  public ResponseEntity<ResultResponse> getMultiplication(@RequestParam BigDecimal num1,
+  public ResponseEntity<ResultDto> getMultiplication(@RequestParam BigDecimal num1,
       @RequestParam BigDecimal num2,
       @RequestHeader(value = "Request-ID", required = false) String requestId) {
 
@@ -107,28 +96,18 @@ public class CalculatorRestController {
     }
 
     // Log the request
-    log.info("Request-ID: {}, Operation: sum, Operands: a={}, b={}", requestId, num1, num2);
+    log.info("Request-ID: {}, Operation: multiplication, Operands: a={}, b={}", requestId, num1,
+        num2);
 
-    // Perform the calculation
-    BigDecimal result = num1.multiply(num2);
+    kafkaMessageProducer.sendCalculationRequest(
+        new CalculationRequest(requestId, OperationEnum.MULTIPLY, num1, num2));
 
-    // Create a response
-    ResultResponse response = new ResultResponse(result);
-
-    return ResponseEntity.ok().header("Request-ID", requestId).body(response);
+    return waitForResponse(requestId);
   }
-  
-  /**
-   * Gets the division.
-   *
-   * @param num1 the num 1
-   * @param num2 the num 2
-   * @param requestId the request id
-   * @return the division
-   */
+
   @GetMapping(value = "/div")
   @ResponseStatus(HttpStatus.OK)
-  public ResponseEntity<ResultResponse> getDivision(@RequestParam BigDecimal num1,
+  public ResponseEntity<ResultDto> getDivision(@RequestParam BigDecimal num1,
       @RequestParam BigDecimal num2,
       @RequestHeader(value = "Request-ID", required = false) String requestId) {
 
@@ -137,16 +116,45 @@ public class CalculatorRestController {
       requestId = UUID.randomUUID().toString();
     }
 
+    // Check for division by zero
+    if (num2.compareTo(BigDecimal.ZERO) == 0) {
+      log.warn("Request-ID: {}, Operation: division, Division by zero attempted with num1={}",
+          requestId, num1);
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+          .body(new ResultDto("Division by zero is not allowed"));
+    }
+
     // Log the request
-    log.info("Request-ID: {}, Operation: sum, Operands: a={}, b={}", requestId, num1, num2);
+    log.info("Request-ID: {}, Operation: division, Operands: num1={}, num2={}", requestId, num1,
+        num2);
 
-    // Perform the calculation
-    BigDecimal result = num1.divide(num2, 2, RoundingMode.HALF_UP);
+    kafkaMessageProducer.sendCalculationRequest(
+        new CalculationRequest(requestId, OperationEnum.DIVIDE, num1, num2));
 
-    // Create a response
-    ResultResponse response = new ResultResponse(result);
+    return waitForResponse(requestId);
+  }
 
-    return ResponseEntity.ok().header("Request-ID", requestId).body(response);
+  private ResponseEntity<ResultDto> waitForResponse(String requestId) {
+    // Wait for the response
+    try {
+      CalculationResponse response = kafkaMessageConsumer.getResponseById(requestId, 5000);
+
+      if (response == null) {
+        log.warn("No response received for Request-ID: {}", requestId);
+        return ResponseEntity.status(HttpStatus.REQUEST_TIMEOUT)
+            .body(new ResultDto("Timeout waiting for response"));
+      }
+
+      // Build the ResultDto from the response
+      ResultDto result = new ResultDto(response.getResult().toString());
+      return ResponseEntity.ok().header("Request-ID", requestId).body(result);
+
+    } catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+      log.error("Error waiting for response", e);
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+          .body(new ResultDto("Internal error occurred"));
+    }
   }
 
 }

@@ -1,0 +1,12 @@
+{"properties": [
+  {
+    "name": "kafka.result-topic",
+    "type": "java.lang.String",
+    "description": "Topic for result of operation"
+  },
+  {
+    "name": "kafka.request-topic",
+    "type": "java.lang.String",
+    "description": "Topic for request of operation'"
+  }
+]}
