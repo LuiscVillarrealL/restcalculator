@@ -44,6 +44,8 @@ jobs:
           JAVA_FILE_NAME: google_checks_custom.xml
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  
 
+    - name: docker compose image
+      run: docker compose up -d
   
     - name: Clean and Build with Maven
       run: mvn clean package --file pom.xml
