@@ -31,10 +31,15 @@ jobs:
         java-version: '21'
         distribution: 'temurin'
         cache: maven
+        
+        
+      # Set up Docker
+    - name: Set up Docker
+      uses: docker/setup-buildx-action@v2
 
     - name: Run Docker Compose
       run: |
-        docker-compose -f docker-compose.yml up -d
+        docker compose up -d
         # Add a wait for Kafka to be ready
         until docker exec broker kafka-topics --bootstrap-server localhost:9092 --list; do
           echo "Waiting for Kafka to be ready...";
