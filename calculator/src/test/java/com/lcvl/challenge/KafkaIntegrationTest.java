@@ -2,47 +2,56 @@ package com.lcvl.challenge;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
-import org.apache.kafka.clients.admin.AdminClient;
-import org.apache.kafka.clients.admin.AdminClientConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.producer.ProducerRecord;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.kafka.test.EmbeddedKafkaBroker;
-import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.TestPropertySource;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.kafka.KafkaContainer;
+import org.testcontainers.utility.DockerImageName;
 import com.lcvl.challenge.calculator.CalculatorApplication;
 import com.lcvl.challenge.calculator.dto.CalculationRequest;
 import com.lcvl.challenge.calculator.dto.CalculationResponse;
 import com.lcvl.challenge.calculator.util.OperationEnum;
 
-@EmbeddedKafka(
-    partitions = 1,
-    topics = { "test-calculation-request-topic", "test-calculation-result-topic" })
+/**
+ * The Class KafkaIntegrationTest.
+ */
 @SpringBootTest(
     classes = CalculatorApplication.class,
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@TestPropertySource(locations = "classpath:application-test.properties")
+@TestPropertySource(locations = "classpath:application.properties")
+@Testcontainers
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class KafkaIntegrationTest {
 
-  @Autowired
-  private KafkaTemplate<String, CalculationRequest> kafkaTemplate;
+  @Container
+  static final KafkaContainer kafka = new KafkaContainer(
+      DockerImageName.parse("apache/kafka-native:3.8.0"));
+
+  @DynamicPropertySource
+  static void overrideProperties(DynamicPropertyRegistry registry) {
+    // Ensure the container has started before accessing its properties
+    kafka.start();
+    registry.add("spring.kafka.bootstrap-servers", kafka::getBootstrapServers);
+  }
 
   @Autowired
-  private EmbeddedKafkaBroker embeddedKafkaBroker;
+  private KafkaTemplate<String, CalculationRequest> kafkaTemplate;
 
   @Value("${kafka.request-topic}")
   private String requestTopic;
@@ -57,32 +66,15 @@ public class KafkaIntegrationTest {
    *
    * @param record the record
    */
-  @KafkaListener(topics = "${kafka.result-topic}", groupId = "${spring.kafka.consumer.group-id}")
+  @KafkaListener(
+      topics = "${kafka.result-topic}",
+      groupId = "${spring.kafka.consumer.group-id}",
+      concurrency = "2")
   public void consumeResult(ConsumerRecord<String, CalculationResponse> record) {
     responseQueue.offer(record.value());
   }
 
-  @BeforeEach
-  void setUp() {
-    resetKafkaTopics();
-    responseQueue.clear();
-  }
-
-  private void resetKafkaTopics() {
-    try (AdminClient adminClient = AdminClient.create(Map.of(
-        AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, embeddedKafkaBroker.getBrokersAsString()))) {
-      adminClient
-          .deleteTopics(List.of("test-calculation-request-topic", "test-calculation-result-topic"))
-          .all().get();
-
-      TimeUnit.SECONDS.sleep(2);
-    } catch (Exception e) {
-      System.err.println("Error resetting Kafka topics: " + e.getMessage());
-    }
-  }
-
   @Test
-  @Order(1)
   void testCalculationFlow() throws InterruptedException {
     CalculationRequest request = new CalculationRequest("123", OperationEnum.SUM, BigDecimal.TEN,
         BigDecimal.ONE);
@@ -96,7 +88,6 @@ public class KafkaIntegrationTest {
   }
 
   @Test
-  @Order(2)
   void testCalculationFlowWithError() throws InterruptedException {
     CalculationRequest request = new CalculationRequest("124", OperationEnum.DIVIDE, BigDecimal.TEN,
         BigDecimal.ZERO);
