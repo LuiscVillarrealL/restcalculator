@@ -1,7 +1,7 @@
-package challenge.common.dto;
+package com.lcvl.challenge.common.dto;
 
 import java.math.BigDecimal;
-import challenge.common.util.OperationEnum;
+import com.lcvl.challenge.common.util.OperationEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

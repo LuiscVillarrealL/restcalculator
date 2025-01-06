@@ -6,8 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import java.math.BigDecimal;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import com.lcvl.challenge.common.dto.CalculationResponse;
 import com.lcvl.challenge.rest.messaging.KafkaMessageConsumer;
-import challenge.common.dto.CalculationResponse;
 
 class KafkaMessageConsumerTest {
 

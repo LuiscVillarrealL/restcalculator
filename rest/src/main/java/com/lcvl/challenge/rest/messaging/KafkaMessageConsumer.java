@@ -4,15 +4,24 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
-import challenge.common.dto.CalculationResponse;
+import com.lcvl.challenge.common.dto.CalculationResponse;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * The Class KafkaMessageConsumer.
+ */
 @Service
 @Slf4j
 public class KafkaMessageConsumer {
 
+  /** The response map. */
   private final ConcurrentMap<String, CalculationResponse> responseMap = new ConcurrentHashMap<>();
 
+  /**
+   * Topic listen.
+   *
+   * @param calculationResponse the calculation response
+   */
   @KafkaListener(topics = "${kafka.result-topic}", groupId = "${spring.kafka.consumer.group-id}")
   public void topicListen(CalculationResponse calculationResponse) {
     log.info("Got message from calculation-response topic {}", calculationResponse);
@@ -21,6 +30,14 @@ public class KafkaMessageConsumer {
     responseMap.put(calculationResponse.getRequestId(), calculationResponse);
   }
 
+  /**
+   * Gets the response by id.
+   *
+   * @param requestId the request id
+   * @param timeoutMillis the timeout millis
+   * @return the response by id
+   * @throws InterruptedException the interrupted exception
+   */
   public CalculationResponse getResponseById(String requestId, long timeoutMillis)
       throws InterruptedException {
     long startTime = System.currentTimeMillis();

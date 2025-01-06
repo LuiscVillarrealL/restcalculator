@@ -2,8 +2,8 @@ package com.lcvl.challenge.calculator.messaging;
 
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
-import com.lcvl.challenge.calculator.dto.CalculationRequest;
 import com.lcvl.challenge.calculator.service.CalculationService;
+import com.lcvl.challenge.common.dto.CalculationRequest;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

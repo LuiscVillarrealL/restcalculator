@@ -9,8 +9,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.test.util.ReflectionTestUtils;
-import com.lcvl.challenge.calculator.dto.CalculationResponse;
 import com.lcvl.challenge.calculator.messaging.KafkaMessageProducer;
+import com.lcvl.challenge.common.dto.CalculationResponse;
 
 @ExtendWith(MockitoExtension.class)
 class KafkaMessageProducerTest {

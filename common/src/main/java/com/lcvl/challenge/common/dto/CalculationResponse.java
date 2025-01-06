@@ -1,4 +1,4 @@
-package com.lcvl.challenge.calculator.dto;
+package com.lcvl.challenge.common.dto;
 
 import java.math.BigDecimal;
 import lombok.AllArgsConstructor;

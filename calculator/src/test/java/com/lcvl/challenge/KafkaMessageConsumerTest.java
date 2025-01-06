@@ -7,10 +7,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import com.lcvl.challenge.calculator.dto.CalculationRequest;
 import com.lcvl.challenge.calculator.messaging.KafkaMessageConsumer;
 import com.lcvl.challenge.calculator.service.CalculationService;
-import challenge.common.util.OperationEnum;
+import com.lcvl.challenge.common.dto.CalculationRequest;
+import com.lcvl.challenge.common.util.OperationEnum;
 
 @ExtendWith(MockitoExtension.class)
 class KafkaMessageConsumerTest {

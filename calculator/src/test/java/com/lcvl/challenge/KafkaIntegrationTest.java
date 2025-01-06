@@ -23,9 +23,9 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.kafka.KafkaContainer;
 import org.testcontainers.utility.DockerImageName;
 import com.lcvl.challenge.calculator.CalculatorApplication;
-import com.lcvl.challenge.calculator.dto.CalculationRequest;
-import com.lcvl.challenge.calculator.dto.CalculationResponse;
-import challenge.common.util.OperationEnum;
+import com.lcvl.challenge.common.dto.CalculationRequest;
+import com.lcvl.challenge.common.dto.CalculationResponse;
+import com.lcvl.challenge.common.util.OperationEnum;
 
 /**
  * The Class KafkaIntegrationTest.

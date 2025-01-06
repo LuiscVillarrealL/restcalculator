@@ -23,12 +23,12 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import com.lcvl.challenge.common.dto.CalculationRequest;
+import com.lcvl.challenge.common.dto.CalculationResponse;
+import com.lcvl.challenge.common.util.OperationEnum;
 import com.lcvl.challenge.rest.controller.CalculatorRestController;
 import com.lcvl.challenge.rest.messaging.KafkaMessageConsumer;
 import com.lcvl.challenge.rest.messaging.KafkaMessageProducer;
-import challenge.common.dto.CalculationRequest;
-import challenge.common.dto.CalculationResponse;
-import challenge.common.util.OperationEnum;
 
 @SpringBootTest(
     classes = RestApplication.class,
