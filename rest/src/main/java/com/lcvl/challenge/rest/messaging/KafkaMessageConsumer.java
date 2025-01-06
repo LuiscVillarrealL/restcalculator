@@ -4,7 +4,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
-import com.lcvl.challenge.rest.dto.CalculationResponse;
+import challenge.common.dto.CalculationResponse;
 import lombok.extern.slf4j.Slf4j;
 
 @Service

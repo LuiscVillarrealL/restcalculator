@@ -1,4 +1,4 @@
-package com.lcvl.challenge.calculator.dto;
+package challenge.common.dto;
 
 import java.math.BigDecimal;
 import challenge.common.util.OperationEnum;
@@ -13,6 +13,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CalculationRequest {
+  
+  //TODO pas to commons
   
   private String requestId;
   private OperationEnum operation;

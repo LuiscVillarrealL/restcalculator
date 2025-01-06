@@ -10,7 +10,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.lcvl.challenge.calculator.dto.CalculationRequest;
 import com.lcvl.challenge.calculator.messaging.KafkaMessageConsumer;
 import com.lcvl.challenge.calculator.service.CalculationService;
-import com.lcvl.challenge.calculator.util.OperationEnum;
+import challenge.common.util.OperationEnum;
 
 @ExtendWith(MockitoExtension.class)
 class KafkaMessageConsumerTest {

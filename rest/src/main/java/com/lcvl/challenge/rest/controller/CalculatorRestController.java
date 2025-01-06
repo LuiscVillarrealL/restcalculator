@@ -11,12 +11,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import com.lcvl.challenge.rest.dto.CalculationRequest;
-import com.lcvl.challenge.rest.dto.CalculationResponse;
-import com.lcvl.challenge.rest.dto.ResultDto;
 import com.lcvl.challenge.rest.messaging.KafkaMessageConsumer;
 import com.lcvl.challenge.rest.messaging.KafkaMessageProducer;
-import com.lcvl.challenge.util.OperationEnum;
+import challenge.common.dto.CalculationRequest;
+import challenge.common.dto.CalculationResponse;
+import challenge.common.dto.ResultDto;
+import challenge.common.util.OperationEnum;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

@@ -17,7 +17,7 @@ import com.lcvl.challenge.calculator.dto.CalculationResponse;
 import com.lcvl.challenge.calculator.messaging.KafkaMessageProducer;
 import com.lcvl.challenge.calculator.service.ArithmeticService;
 import com.lcvl.challenge.calculator.service.CalculationService;
-import com.lcvl.challenge.calculator.util.OperationEnum;
+import challenge.common.util.OperationEnum;
 
 @ExtendWith(MockitoExtension.class)
 class CalculationServiceTest {

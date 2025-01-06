@@ -7,9 +7,9 @@ import java.math.BigDecimal;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.kafka.core.KafkaTemplate;
-import com.lcvl.challenge.rest.dto.CalculationRequest;
 import com.lcvl.challenge.rest.messaging.KafkaMessageProducer;
-import com.lcvl.challenge.util.OperationEnum;
+import challenge.common.dto.CalculationRequest;
+import challenge.common.util.OperationEnum;
 
 class KafkaMessageProducerTest {
 

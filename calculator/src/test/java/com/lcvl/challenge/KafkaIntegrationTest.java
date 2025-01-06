@@ -25,7 +25,7 @@ import org.testcontainers.utility.DockerImageName;
 import com.lcvl.challenge.calculator.CalculatorApplication;
 import com.lcvl.challenge.calculator.dto.CalculationRequest;
 import com.lcvl.challenge.calculator.dto.CalculationResponse;
-import com.lcvl.challenge.calculator.util.OperationEnum;
+import challenge.common.util.OperationEnum;
 
 /**
  * The Class KafkaIntegrationTest.

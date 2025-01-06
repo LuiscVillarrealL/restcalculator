@@ -133,6 +133,7 @@
 	</build>
 
 	<modules>
+			<module>common</module>
 		<module>calculator</module>
 		<module>rest</module>
 	</modules>
