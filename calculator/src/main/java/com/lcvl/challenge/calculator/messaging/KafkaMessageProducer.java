@@ -3,8 +3,7 @@ package com.lcvl.challenge.calculator.messaging;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
-import com.lcvl.challenge.calculator.dto.CalculationResponse;
-import lombok.AllArgsConstructor;
+import com.lcvl.challenge.common.dto.CalculationResponse;
 import lombok.extern.slf4j.Slf4j;
 
 /**

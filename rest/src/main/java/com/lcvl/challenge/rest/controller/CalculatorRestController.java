@@ -11,15 +11,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import com.lcvl.challenge.rest.dto.CalculationRequest;
-import com.lcvl.challenge.rest.dto.CalculationResponse;
+import com.lcvl.challenge.common.dto.CalculationRequest;
+import com.lcvl.challenge.common.dto.CalculationResponse;
+import com.lcvl.challenge.common.util.OperationEnum;
 import com.lcvl.challenge.rest.dto.ResultDto;
 import com.lcvl.challenge.rest.messaging.KafkaMessageConsumer;
 import com.lcvl.challenge.rest.messaging.KafkaMessageProducer;
-import com.lcvl.challenge.util.OperationEnum;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class CalculatorRestController.
  */
@@ -29,12 +30,22 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class CalculatorRestController {
 
+  /** The kafka message producer. */
   @Autowired
   private KafkaMessageProducer kafkaMessageProducer;
 
+  /** The kafka message consumer. */
   @Autowired
   private KafkaMessageConsumer kafkaMessageConsumer;
 
+  /**
+   * Gets the sum.
+   *
+   * @param num1 the num 1
+   * @param num2 the num 2
+   * @param requestId the request id
+   * @return the sum
+   */
   @GetMapping(value = "/sum")
   @ResponseStatus(HttpStatus.OK)
   public ResponseEntity<ResultDto> getSum(@RequestParam BigDecimal num1,
@@ -84,6 +95,14 @@ public class CalculatorRestController {
     return waitForResponse(requestId);
   }
 
+  /**
+   * Gets the multiplication.
+   *
+   * @param num1 the num 1
+   * @param num2 the num 2
+   * @param requestId the request id
+   * @return the multiplication
+   */
   @GetMapping(value = "/multi")
   @ResponseStatus(HttpStatus.OK)
   public ResponseEntity<ResultDto> getMultiplication(@RequestParam BigDecimal num1,
@@ -105,6 +124,14 @@ public class CalculatorRestController {
     return waitForResponse(requestId);
   }
 
+  /**
+   * Gets the division.
+   *
+   * @param num1 the num 1
+   * @param num2 the num 2
+   * @param requestId the request id
+   * @return the division
+   */
   @GetMapping(value = "/div")
   @ResponseStatus(HttpStatus.OK)
   public ResponseEntity<ResultDto> getDivision(@RequestParam BigDecimal num1,
@@ -134,6 +161,12 @@ public class CalculatorRestController {
     return waitForResponse(requestId);
   }
 
+  /**
+   * Wait for response.
+   *
+   * @param requestId the request id
+   * @return the response entity
+   */
   private ResponseEntity<ResultDto> waitForResponse(String requestId) {
     // Wait for the response
     try {

@@ -1,4 +1,4 @@
-package com.lcvl.challenge.util;
+package com.lcvl.challenge.common.util;
 
 /**
  * The Enum OperationEnum.

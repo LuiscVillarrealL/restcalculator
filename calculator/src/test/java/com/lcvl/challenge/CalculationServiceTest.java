@@ -12,12 +12,12 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import com.lcvl.challenge.calculator.dto.CalculationRequest;
-import com.lcvl.challenge.calculator.dto.CalculationResponse;
 import com.lcvl.challenge.calculator.messaging.KafkaMessageProducer;
 import com.lcvl.challenge.calculator.service.ArithmeticService;
 import com.lcvl.challenge.calculator.service.CalculationService;
-import com.lcvl.challenge.calculator.util.OperationEnum;
+import com.lcvl.challenge.common.dto.CalculationRequest;
+import com.lcvl.challenge.common.dto.CalculationResponse;
+import com.lcvl.challenge.common.util.OperationEnum;
 
 @ExtendWith(MockitoExtension.class)
 class CalculationServiceTest {

@@ -2,9 +2,9 @@ package com.lcvl.challenge.calculator.service;
 
 import java.math.BigDecimal;
 import org.springframework.stereotype.Service;
-import com.lcvl.challenge.calculator.dto.CalculationRequest;
-import com.lcvl.challenge.calculator.dto.CalculationResponse;
 import com.lcvl.challenge.calculator.messaging.KafkaMessageProducer;
+import com.lcvl.challenge.common.dto.CalculationRequest;
+import com.lcvl.challenge.common.dto.CalculationResponse;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
