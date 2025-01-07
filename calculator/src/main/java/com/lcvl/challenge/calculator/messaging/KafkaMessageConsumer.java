@@ -1,5 +1,6 @@
 package com.lcvl.challenge.calculator.messaging;
 
+import org.slf4j.MDC;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 import com.lcvl.challenge.calculator.service.CalculationService;
@@ -25,7 +26,11 @@ public class KafkaMessageConsumer {
   @KafkaListener(topics = "${kafka.request-topic}", groupId = "${spring.kafka.consumer.group-id}")
   public void topicListen(CalculationRequest calculationRequest) {
 
-    log.info("Got message from calculation-request topic {}", calculationRequest);
+    MDC.put("requestId", calculationRequest.getRequestId());
+    
+    log.info("Got message from calculation-request topic");
+    
+    MDC.clear();
 
     calculationService.calculationDecision(calculationRequest);
 

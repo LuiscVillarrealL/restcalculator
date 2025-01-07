@@ -38,7 +38,8 @@ public class KafkaMessageProducer {
    */
   public void sendCalculationRequest(CalculationRequest request) {
 
-    log.info("Sending message from {} topic {}", requestTopic, request);
+    log.info("Sending message from topic: {}, with message: {}", requestTopic, request);
+
     kafkaTemplate.send(requestTopic, request);
   }
 

@@ -2,6 +2,7 @@ package com.lcvl.challenge.rest.messaging;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import org.slf4j.MDC;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 import com.lcvl.challenge.common.dto.CalculationResponse;
@@ -24,10 +25,19 @@ public class KafkaMessageConsumer {
    */
   @KafkaListener(topics = "${kafka.result-topic}", groupId = "${spring.kafka.consumer.group-id}")
   public void topicListen(CalculationResponse calculationResponse) {
-    log.info("Got message from calculation-response topic {}", calculationResponse);
 
-    // Store the response keyed by requestId
-    responseMap.put(calculationResponse.getRequestId(), calculationResponse);
+    try {
+      MDC.put("Request-ID", calculationResponse.getRequestId());
+      log.info("Got message from calculation-response topic {}", calculationResponse);
+
+      // Store the response keyed by requestId
+      responseMap.put(calculationResponse.getRequestId(), calculationResponse);
+
+    }
+    finally {
+      // Clear MDC after processing
+      MDC.clear();
+    }
   }
 
   /**

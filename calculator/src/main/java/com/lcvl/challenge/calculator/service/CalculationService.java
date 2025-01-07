@@ -1,6 +1,7 @@
 package com.lcvl.challenge.calculator.service;
 
 import java.math.BigDecimal;
+import org.slf4j.MDC;
 import org.springframework.stereotype.Service;
 import com.lcvl.challenge.calculator.messaging.KafkaMessageProducer;
 import com.lcvl.challenge.common.dto.CalculationRequest;
@@ -52,16 +53,19 @@ public class CalculationService {
               "Unsupported operation: " + calculationRequest.getOperation());
       }
 
-      log.info("Calculation completed for request {}: {}", calculationRequest.getRequestId(),
-          result);
+      MDC.put("requestId", calculationRequest.getRequestId());
 
+      log.info("Calculation completed for request");
+
+      MDC.clear();
       kafkaProducer.sendCalculationResponse(
           new CalculationResponse(calculationRequest.getRequestId(), result, null));
 
     } catch (Exception e) {
-      log.error("Error processing request {}: {}", calculationRequest.getRequestId(),
-          e.getMessage(), e);
-      
+      MDC.put("requestId", calculationRequest.getRequestId());
+      log.error("Error processing request: {}", e.getMessage(), e);
+      MDC.clear();
+
       kafkaProducer.sendCalculationResponse(
           new CalculationResponse(calculationRequest.getRequestId(), null, e.getMessage()));
 

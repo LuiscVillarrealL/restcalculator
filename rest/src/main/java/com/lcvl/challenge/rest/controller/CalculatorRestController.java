@@ -2,6 +2,7 @@ package com.lcvl.challenge.rest.controller;
 
 import java.math.BigDecimal;
 import java.util.UUID;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +21,6 @@ import com.lcvl.challenge.rest.messaging.KafkaMessageProducer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class CalculatorRestController.
  */
@@ -52,18 +52,26 @@ public class CalculatorRestController {
       @RequestParam BigDecimal num2,
       @RequestHeader(value = "Request-ID", required = false) String requestId) {
 
-    // Generate a unique identifier if not provided
     if (requestId == null || requestId.isEmpty()) {
-      requestId = UUID.randomUUID().toString();
+      requestId = MDC.get("Request-ID");
     }
 
-    // Log the request
-    log.info("Request-ID: {}, Operation: sum, Operands: num1={}, num2={}", requestId, num1, num2);
+    try {
 
-    kafkaMessageProducer
-        .sendCalculationRequest(new CalculationRequest(requestId, OperationEnum.SUM, num1, num2));
+      // Log the request
+      log.info("Operation: sum, Operands: num1={}, num2={}", num1, num2);
 
-    return waitForResponse(requestId);
+      // Send the request to the Kafka topic with the generated Request-ID
+      kafkaMessageProducer
+          .sendCalculationRequest(new CalculationRequest(requestId, OperationEnum.SUM, num1, num2));
+
+      return waitForResponse(requestId);
+
+    }
+    finally {
+      // Clear MDC after the request is processed
+      MDC.clear();
+    }
   }
 
   /**
@@ -86,8 +94,7 @@ public class CalculatorRestController {
     }
 
     // Log the request
-    log.info("Request-ID: {}, Operation: substraction, Operands: a={}, b={}", requestId, num1,
-        num2);
+    log.info("Operation: substraction, Operands: a={}, b={}", num1, num2);
 
     kafkaMessageProducer.sendCalculationRequest(
         new CalculationRequest(requestId, OperationEnum.SUBTRACT, num1, num2));
@@ -115,8 +122,7 @@ public class CalculatorRestController {
     }
 
     // Log the request
-    log.info("Request-ID: {}, Operation: multiplication, Operands: a={}, b={}", requestId, num1,
-        num2);
+    log.info("Operation: multiplication, Operands: a={}, b={}", num1, num2);
 
     kafkaMessageProducer.sendCalculationRequest(
         new CalculationRequest(requestId, OperationEnum.MULTIPLY, num1, num2));
@@ -145,15 +151,13 @@ public class CalculatorRestController {
 
     // Check for division by zero
     if (num2.compareTo(BigDecimal.ZERO) == 0) {
-      log.warn("Request-ID: {}, Operation: division, Division by zero attempted with num1={}",
-          requestId, num1);
+      log.warn("Operation: division, Division by zero attempted with num1={}", num1);
       return ResponseEntity.status(HttpStatus.BAD_REQUEST)
           .body(new ResultDto("Division by zero is not allowed"));
     }
 
     // Log the request
-    log.info("Request-ID: {}, Operation: division, Operands: num1={}, num2={}", requestId, num1,
-        num2);
+    log.info("Operation: division, Operands: num1={}, num2={}", num1, num2);
 
     kafkaMessageProducer.sendCalculationRequest(
         new CalculationRequest(requestId, OperationEnum.DIVIDE, num1, num2));
@@ -173,7 +177,7 @@ public class CalculatorRestController {
       CalculationResponse response = kafkaMessageConsumer.getResponseById(requestId, 5000);
 
       if (response == null) {
-        log.warn("No response received for Request-ID: {}", requestId);
+        log.warn("No response received");
         return ResponseEntity.status(HttpStatus.REQUEST_TIMEOUT)
             .body(new ResultDto("Timeout waiting for response"));
       }

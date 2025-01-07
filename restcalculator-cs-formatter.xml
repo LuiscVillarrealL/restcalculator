@@ -96,8 +96,6 @@
                value="insert"/>
       <setting id="org.eclipse.jdt.core.formatter.insert_space_before_parenthesized_expression_in_return"
                value="insert"/>
-      <setting id="org.eclipse.jdt.core.formatter.insert_new_line_before_catch_in_try_statement"
-               value="do not insert"/>
       <setting id="org.eclipse.jdt.core.formatter.insert_space_after_comma_in_explicitconstructorcall_arguments"
                value="insert"/>
       <setting id="org.eclipse.jdt.core.formatter.insert_space_before_opening_brace_in_annotation_type_declaration"
@@ -140,8 +138,6 @@
                value="insert"/>
       <setting id="org.eclipse.jdt.core.formatter.insert_space_before_closing_angle_bracket_in_type_parameters"
                value="do not insert"/>
-      <setting id="org.eclipse.jdt.core.formatter.insert_new_line_before_finally_in_try_statement"
-               value="insert"/>
       <setting id="org.eclipse.jdt.core.formatter.insert_space_after_comma_in_for_inits"
                value="insert"/>
       <setting id="org.eclipse.jdt.core.formatter.brace_position_for_anonymous_type_declaration"
@@ -154,8 +150,6 @@
       <setting id="org.eclipse.jdt.core.formatter.lineSplit" value="100"/>
       <setting id="org.eclipse.jdt.core.formatter.insert_space_before_opening_brace_in_switch"
                value="insert"/>
-      <setting id="org.eclipse.jdt.core.formatter.insert_new_line_before_else_in_if_statement"
-               value="do not insert"/>
       <setting id="org.eclipse.jdt.core.formatter.insert_space_before_assignment_operator"
                value="insert"/>
       <setting id="org.eclipse.jdt.core.formatter.insert_space_before_opening_paren_in_constructor_declaration"
