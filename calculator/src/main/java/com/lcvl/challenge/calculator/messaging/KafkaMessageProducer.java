@@ -18,8 +18,7 @@ public class KafkaMessageProducer {
 
   private final String resultTopic;
   
-  @Value("${mdc.correlation.id}")
-  private String correlationId;
+  private String correlationId = "Request-ID";
 
   /**
    * Instantiates a new kafka message producer.

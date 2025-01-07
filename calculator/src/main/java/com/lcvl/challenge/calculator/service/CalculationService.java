@@ -2,12 +2,10 @@ package com.lcvl.challenge.calculator.service;
 
 import java.math.BigDecimal;
 import org.slf4j.MDC;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import com.lcvl.challenge.calculator.messaging.KafkaMessageProducer;
 import com.lcvl.challenge.common.dto.CalculationRequest;
 import com.lcvl.challenge.common.dto.CalculationResponse;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -17,6 +15,12 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class CalculationService {
 
+  /**
+   * Instantiates a new calculation service.
+   *
+   * @param arithmeticService the arithmetic service
+   * @param kafkaProducer the kafka producer
+   */
   public CalculationService(ArithmeticService arithmeticService,
       KafkaMessageProducer kafkaProducer) {
     super();
@@ -27,8 +31,7 @@ public class CalculationService {
   private final ArithmeticService arithmeticService;
   private final KafkaMessageProducer kafkaProducer;
 
-  @Value("${mdc.correlation.id}")
-  private String correlationId;
+  private String correlationId = "Request-ID";
 
   /**
    * Calculation decision.

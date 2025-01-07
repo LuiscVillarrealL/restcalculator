@@ -1,12 +1,10 @@
 package com.lcvl.challenge.calculator.messaging;
 
 import org.slf4j.MDC;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 import com.lcvl.challenge.calculator.service.CalculationService;
 import com.lcvl.challenge.common.dto.CalculationRequest;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -16,17 +14,18 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class KafkaMessageConsumer {
   
-  
-
+  /**
+   * Instantiates a new kafka message consumer.
+   *
+   * @param calculationService the calculation service
+   */
   public KafkaMessageConsumer(CalculationService calculationService) {
-    super();
     this.calculationService = calculationService;
   }
 
   private final CalculationService calculationService;
   
-  @Value("${mdc.correlation.id}")
-  private String correlationId;
+  private String correlationId = "Request-ID";
 
   /**
    * Topic listen.
