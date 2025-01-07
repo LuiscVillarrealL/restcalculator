@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import com.lcvl.challenge.calculator.messaging.KafkaMessageProducer;
 import com.lcvl.challenge.common.dto.CalculationRequest;
 import com.lcvl.challenge.common.dto.CalculationResponse;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -14,11 +13,25 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Service
 @Slf4j
-@AllArgsConstructor
 public class CalculationService {
+
+  /**
+   * Instantiates a new calculation service.
+   *
+   * @param arithmeticService the arithmetic service
+   * @param kafkaProducer the kafka producer
+   */
+  public CalculationService(ArithmeticService arithmeticService,
+      KafkaMessageProducer kafkaProducer) {
+    super();
+    this.arithmeticService = arithmeticService;
+    this.kafkaProducer = kafkaProducer;
+  }
 
   private final ArithmeticService arithmeticService;
   private final KafkaMessageProducer kafkaProducer;
+
+  private String correlationId = "Request-ID";
 
   /**
    * Calculation decision.
@@ -53,7 +66,7 @@ public class CalculationService {
               "Unsupported operation: " + calculationRequest.getOperation());
       }
 
-      MDC.put("requestId", calculationRequest.getRequestId());
+      MDC.put(correlationId, calculationRequest.getRequestId());
 
       log.info("Calculation completed for request");
 
@@ -62,7 +75,7 @@ public class CalculationService {
           new CalculationResponse(calculationRequest.getRequestId(), result, null));
 
     } catch (Exception e) {
-      MDC.put("requestId", calculationRequest.getRequestId());
+      MDC.put(correlationId, calculationRequest.getRequestId());
       log.error("Error processing request: {}", e.getMessage(), e);
       MDC.clear();
 

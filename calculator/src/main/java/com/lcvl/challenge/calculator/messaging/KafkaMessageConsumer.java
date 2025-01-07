@@ -5,7 +5,6 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 import com.lcvl.challenge.calculator.service.CalculationService;
 import com.lcvl.challenge.common.dto.CalculationRequest;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -13,10 +12,20 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Service
 @Slf4j
-@AllArgsConstructor
 public class KafkaMessageConsumer {
+  
+  /**
+   * Instantiates a new kafka message consumer.
+   *
+   * @param calculationService the calculation service
+   */
+  public KafkaMessageConsumer(CalculationService calculationService) {
+    this.calculationService = calculationService;
+  }
 
   private final CalculationService calculationService;
+  
+  private String correlationId = "Request-ID";
 
   /**
    * Topic listen.
@@ -26,7 +35,7 @@ public class KafkaMessageConsumer {
   @KafkaListener(topics = "${kafka.request-topic}", groupId = "${spring.kafka.consumer.group-id}")
   public void topicListen(CalculationRequest calculationRequest) {
 
-    MDC.put("requestId", calculationRequest.getRequestId());
+    MDC.put(correlationId, calculationRequest.getRequestId());
     
     log.info("Got message from calculation-request topic");
     

@@ -5,13 +5,35 @@
   <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
     <encoder>
       <pattern>
-%d{yyyy-MM-dd'T'HH:mm:ss.SSS'Z'} [%t] LEVEL=%-5level TRACEID=%replace(%X{requestId:-null}){'null', ''} | %m%n%ex
-      </pattern>    </encoder>
+        <!-- Date, Thread, Log level, RequestId, Message -->
+%d{yyyy-MM-dd'T'HH:mm:ss.SSS'Z'} [%t] LEVEL=%-5level TRACEID=%replace(%X{Request-ID:-null}){'null', ''} | %m%n%ex
+      </pattern>
+    </encoder>
   </appender>
 
-  <!-- Root Logger definition -->
+  <!-- Rolling File Appender -->
+  <appender name="ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <!-- Rolling policy configuration -->
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <!-- File name pattern with date -->
+      <fileNamePattern>logs/application-rest-test-%d{yyyy-MM-dd}.log</fileNamePattern>
+      
+      <!-- Maximum number of days to retain logs -->
+      <maxHistory>30</maxHistory>
+    </rollingPolicy>
+    
+    <encoder>
+      <pattern>
+        <!-- Date, Thread, Log level, RequestId, Message -->
+%d{yyyy-MM-dd'T'HH:mm:ss.SSS'Z'} [%t] LEVEL=%-5level TRACEID=%replace(%X{Request-ID:-null}){'null', ''} | %m%n%ex
+      </pattern>
+    </encoder>
+  </appender>
+
+  <!-- Root Logger -->
   <root level="INFO">
     <appender-ref ref="STDOUT"/>
+    <appender-ref ref="ROLLING"/>
   </root>
 
 </configuration>

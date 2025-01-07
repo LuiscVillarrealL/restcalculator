@@ -17,6 +17,8 @@ public class KafkaMessageProducer {
   private final KafkaTemplate<String, CalculationResponse> kafkaTemplate;
 
   private final String resultTopic;
+  
+  private String correlationId = "Request-ID";
 
   /**
    * Instantiates a new kafka message producer.
@@ -37,7 +39,7 @@ public class KafkaMessageProducer {
    */
   public void sendCalculationResponse(CalculationResponse request) {
     
-    MDC.put("requestId", request.getRequestId());
+    MDC.put(correlationId, request.getRequestId());
     log.info("Sending message from {} topic {}", resultTopic, request);    
     MDC.clear();
     
