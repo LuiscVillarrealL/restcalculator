@@ -2,6 +2,7 @@ package com.lcvl.challenge.calculator.service;
 
 import java.math.BigDecimal;
 import org.slf4j.MDC;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import com.lcvl.challenge.calculator.messaging.KafkaMessageProducer;
 import com.lcvl.challenge.common.dto.CalculationRequest;
@@ -23,15 +24,16 @@ public class CalculationService {
    */
   public CalculationService(ArithmeticService arithmeticService,
       KafkaMessageProducer kafkaProducer) {
-    super();
     this.arithmeticService = arithmeticService;
     this.kafkaProducer = kafkaProducer;
+    this.correlationId = "Request-ID"; // Default value in case @Value injection fails
   }
 
   private final ArithmeticService arithmeticService;
   private final KafkaMessageProducer kafkaProducer;
 
-  private String correlationId = "Request-ID";
+  @Value("${mdc.correlation.id")
+  private String correlationId;
 
   /**
    * Calculation decision.
@@ -48,6 +50,7 @@ public class CalculationService {
         case SUM:
           result = arithmeticService.addNumbers(calculationRequest.getNum1(),
               calculationRequest.getNum2());
+          System.out.println("result " + result);
           break;
         case SUBTRACT:
           result = arithmeticService.subtractNumbers(calculationRequest.getNum1(),

@@ -1,6 +1,7 @@
 package com.lcvl.challenge.calculator.messaging;
 
 import org.slf4j.MDC;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 import com.lcvl.challenge.calculator.service.CalculationService;
@@ -25,7 +26,8 @@ public class KafkaMessageConsumer {
 
   private final CalculationService calculationService;
   
-  private String correlationId = "Request-ID";
+  @Value("${mdc.correlation.id}")
+  private String correlationId;
 
   /**
    * Topic listen.

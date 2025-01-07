@@ -3,6 +3,7 @@ package com.lcvl.challenge.rest.util;
 import java.math.BigDecimal;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -29,7 +30,8 @@ public class CalculationServiceHelper {
   @Autowired
   private KafkaMessageConsumer kafkaMessageConsumer;
 
-  String correlationId = "Request-ID";
+  @Value("${mdc.correlation.id}")
+  String correlationId;
 
   /**
    * Handle calculation request.
