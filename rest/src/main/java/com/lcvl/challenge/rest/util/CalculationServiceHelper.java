@@ -29,6 +29,8 @@ public class CalculationServiceHelper {
   @Autowired
   private KafkaMessageConsumer kafkaMessageConsumer;
 
+  String correlationId = "Request-ID";
+
   /**
    * Handle calculation request.
    *
@@ -42,7 +44,7 @@ public class CalculationServiceHelper {
       String requestId, OperationEnum operation) {
 
     if (requestId == null || requestId.isEmpty()) {
-      requestId = MDC.get("Request-ID");
+      requestId = MDC.get(correlationId);
     }
 
     try {
@@ -55,7 +57,7 @@ public class CalculationServiceHelper {
       if (operation == OperationEnum.DIVIDE && number2.compareTo(BigDecimal.ZERO) == 0) {
         log.warn("Operation: division, Division by zero attempted with num1={}, num2={}", number1,
             number2);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).header(correlationId, requestId)
             .body(new ResultDto("Division by zero is not allowed"));
 
       }
@@ -71,7 +73,7 @@ public class CalculationServiceHelper {
 
     } catch (NumberFormatException e) {
       // Return a bad request response if numbers are invalid
-      return ResponseEntity.badRequest()
+      return ResponseEntity.badRequest().header(correlationId, requestId)
           .body(new ResultDto("Invalid number format. Please provide valid numbers."));
     }
     finally {
@@ -94,7 +96,7 @@ public class CalculationServiceHelper {
 
       if (response == null) {
         log.warn("No response received");
-        return ResponseEntity.status(HttpStatus.REQUEST_TIMEOUT)
+        return ResponseEntity.status(HttpStatus.REQUEST_TIMEOUT).header(correlationId, requestId)
             .body(new ResultDto("Timeout waiting for response"));
       }
 
@@ -106,7 +108,7 @@ public class CalculationServiceHelper {
       Thread.currentThread().interrupt();
       log.error("Error waiting for response", e);
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-          .body(new ResultDto("Internal error occurred"));
+          .header(correlationId, requestId).body(new ResultDto("Internal error occurred"));
     }
   }
 }
