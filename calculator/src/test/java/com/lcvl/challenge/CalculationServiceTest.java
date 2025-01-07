@@ -32,13 +32,16 @@ class CalculationServiceTest {
   void testCalculationDecision() {
     CalculationRequest request = new CalculationRequest("123", OperationEnum.SUM, BigDecimal.ONE,
         BigDecimal.TEN);
-    when(arithmeticService.addNumbers(any(), any())).thenReturn(BigDecimal.valueOf(11));
 
+    // Mock behavior
+    when(arithmeticService.addNumbers((BigDecimal.ONE), (BigDecimal.TEN)))
+        .thenReturn(BigDecimal.valueOf(11));
+
+    // Call the method
     calculationService.calculationDecision(request);
 
+    // Verify interaction
     verify(arithmeticService).addNumbers(BigDecimal.ONE, BigDecimal.TEN);
     verify(kafkaProducer).sendCalculationResponse(any(CalculationResponse.class));
   }
-
-
 }

@@ -1,7 +1,9 @@
 package com.lcvl.challenge;
 
 import static org.mockito.Mockito.verify;
+import java.lang.reflect.Field;
 import java.math.BigDecimal;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -22,6 +24,13 @@ class KafkaMessageProducerTest {
 
   @InjectMocks
   private KafkaMessageProducer kafkaMessageProducer;
+  
+  @BeforeEach
+  void setup() throws Exception {
+    Field field = KafkaMessageProducer.class.getDeclaredField("correlationId");
+    field.setAccessible(true);
+    field.set(kafkaMessageProducer, "Request-ID");
+  }
 
   @Test
   void testSendCalculationResponse() {

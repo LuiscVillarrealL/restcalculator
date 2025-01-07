@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
@@ -31,12 +32,13 @@ import com.lcvl.challenge.rest.messaging.KafkaMessageConsumer;
 import com.lcvl.challenge.rest.messaging.KafkaMessageProducer;
 
 @SpringBootTest(
-    classes = RestApplication.class,
+    classes = {RestApplication.class},
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource(locations = "classpath:application.properties")
 @Testcontainers
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+@EnableConfigurationProperties
 class CalculatorRestControllerIntegrationTest {
 
   @Autowired

@@ -1,7 +1,9 @@
 package com.lcvl.challenge;
 
 import static org.mockito.Mockito.verify;
+import java.lang.reflect.Field;
 import java.math.BigDecimal;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -14,7 +16,7 @@ import com.lcvl.challenge.common.dto.CalculationRequest;
 import com.lcvl.challenge.common.util.OperationEnum;
 
 @ExtendWith(MockitoExtension.class)
-@TestPropertySource(locations = "classpath:application.properties")
+@TestPropertySource(properties = "mdc.correlation.id=Request-ID")
 class KafkaMessageConsumerTest {
 
   @Mock
@@ -22,6 +24,13 @@ class KafkaMessageConsumerTest {
 
   @InjectMocks
   private KafkaMessageConsumer kafkaMessageConsumer;
+
+  @BeforeEach
+  void setup() throws Exception {
+    Field field = KafkaMessageConsumer.class.getDeclaredField("correlationId");
+    field.setAccessible(true);
+    field.set(kafkaMessageConsumer, "Request-ID");
+  }
 
   @Test
   void testTopicListen() {
