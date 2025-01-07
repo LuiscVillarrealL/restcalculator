@@ -1,8 +1,5 @@
 package com.lcvl.challenge.rest.controller;
 
-import java.math.BigDecimal;
-import java.util.UUID;
-import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,8 +9,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import com.lcvl.challenge.common.dto.CalculationRequest;
-import com.lcvl.challenge.common.dto.CalculationResponse;
 import com.lcvl.challenge.common.util.OperationEnum;
 import com.lcvl.challenge.rest.dto.ResultDto;
 import com.lcvl.challenge.rest.util.CalculationServiceHelper;
@@ -27,6 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class CalculatorRestController {
 
+  /** The calculation service helper. */
   @Autowired
   private CalculationServiceHelper calculationServiceHelper;
 
@@ -40,8 +36,7 @@ public class CalculatorRestController {
    */
   @GetMapping(value = "/sum")
   @ResponseStatus(HttpStatus.OK)
-  public ResponseEntity<ResultDto> getSum(@RequestParam BigDecimal num1,
-      @RequestParam BigDecimal num2,
+  public ResponseEntity<ResultDto> getSum(@RequestParam char[] num1, @RequestParam char[] num2,
       @RequestHeader(value = "Request-ID", required = false) String requestId) {
 
     return calculationServiceHelper.handleCalculationRequest(num1, num2, requestId,
@@ -59,8 +54,8 @@ public class CalculatorRestController {
    */
   @GetMapping(value = "/sub")
   @ResponseStatus(HttpStatus.OK)
-  public ResponseEntity<ResultDto> getSubstraction(@RequestParam BigDecimal num1,
-      @RequestParam BigDecimal num2,
+  public ResponseEntity<ResultDto> getSubstraction(@RequestParam char[] num1,
+      @RequestParam char[] num2,
       @RequestHeader(value = "Request-ID", required = false) String requestId) {
 
     return calculationServiceHelper.handleCalculationRequest(num1, num2, requestId,
@@ -77,8 +72,8 @@ public class CalculatorRestController {
    */
   @GetMapping(value = "/multi")
   @ResponseStatus(HttpStatus.OK)
-  public ResponseEntity<ResultDto> getMultiplication(@RequestParam BigDecimal num1,
-      @RequestParam BigDecimal num2,
+  public ResponseEntity<ResultDto> getMultiplication(@RequestParam char[] num1,
+      @RequestParam char[] num2,
       @RequestHeader(value = "Request-ID", required = false) String requestId) {
 
     return calculationServiceHelper.handleCalculationRequest(num1, num2, requestId,
@@ -95,8 +90,7 @@ public class CalculatorRestController {
    */
   @GetMapping(value = "/div")
   @ResponseStatus(HttpStatus.OK)
-  public ResponseEntity<ResultDto> getDivision(@RequestParam BigDecimal num1,
-      @RequestParam BigDecimal num2,
+  public ResponseEntity<ResultDto> getDivision(@RequestParam char[] num1, @RequestParam char[] num2,
       @RequestHeader(value = "Request-ID", required = false) String requestId) {
 
     return calculationServiceHelper.handleCalculationRequest(num1, num2, requestId,

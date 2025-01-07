@@ -21,9 +21,11 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class CalculationServiceHelper {
 
+  /** The kafka message producer. */
   @Autowired
   private KafkaMessageProducer kafkaMessageProducer;
 
+  /** The kafka message consumer. */
   @Autowired
   private KafkaMessageConsumer kafkaMessageConsumer;
 
@@ -36,7 +38,7 @@ public class CalculationServiceHelper {
    * @param operation the operation
    * @return the response entity
    */
-  public ResponseEntity<ResultDto> handleCalculationRequest(BigDecimal num1, BigDecimal num2,
+  public ResponseEntity<ResultDto> handleCalculationRequest(char[] num1, char[] num2,
       String requestId, OperationEnum operation) {
 
     if (requestId == null || requestId.isEmpty()) {
@@ -44,23 +46,33 @@ public class CalculationServiceHelper {
     }
 
     try {
+
+      // Validate if num1 and num2 are valid BigDecimal
+      BigDecimal number1 = new BigDecimal(num1);
+      BigDecimal number2 = new BigDecimal(num2);
+
       // Check for division by zero
-      if (operation == OperationEnum.DIVIDE && num2.compareTo(BigDecimal.ZERO) == 0) {
-        log.warn("Operation: division, Division by zero attempted with num1={}, num2={}", num1,
-            num2);
+      if (operation == OperationEnum.DIVIDE && number2.compareTo(BigDecimal.ZERO) == 0) {
+        log.warn("Operation: division, Division by zero attempted with num1={}, num2={}", number1,
+            number2);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
             .body(new ResultDto("Division by zero is not allowed"));
+
       }
 
       // Log the request
-      log.info("Operation: {}, Operands: num1={}, num2={}", operation.name(), num1, num2);
+      log.info("Operation: {}, Operands: num1={}, num2={}", operation.name(), number1, number2);
 
       // Send the request to the Kafka topic with the generated Request-ID
       kafkaMessageProducer
-          .sendCalculationRequest(new CalculationRequest(requestId, operation, num1, num2));
+          .sendCalculationRequest(new CalculationRequest(requestId, operation, number1, number2));
 
       return waitForResponse(requestId);
 
+    } catch (NumberFormatException e) {
+      // Return a bad request response if numbers are invalid
+      return ResponseEntity.badRequest()
+          .body(new ResultDto("Invalid number format. Please provide valid numbers."));
     }
     finally {
       // Clear MDC after the request is processed
@@ -69,6 +81,12 @@ public class CalculationServiceHelper {
 
   }
 
+  /**
+   * Wait for response.
+   *
+   * @param requestId the request id
+   * @return the response entity
+   */
   private ResponseEntity<ResultDto> waitForResponse(String requestId) {
     // Wait for the response
     try {
