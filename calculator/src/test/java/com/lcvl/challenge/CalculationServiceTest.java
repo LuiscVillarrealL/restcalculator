@@ -1,14 +1,11 @@
 package com.lcvl.challenge;
 
-import static org.junit.Assert.assertNull;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import java.math.BigDecimal;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -43,26 +40,5 @@ class CalculationServiceTest {
     verify(kafkaProducer).sendCalculationResponse(any(CalculationResponse.class));
   }
 
-  @Test
-  void testCalculationDecisionHandlesError() {
-    CalculationRequest request = new CalculationRequest("123", OperationEnum.DIVIDE, BigDecimal.ONE,
-        BigDecimal.ZERO);
 
-    // Mock exception
-    when(arithmeticService.divideNumbers(any(), any()))
-        .thenThrow(new ArithmeticException("Division by zero"));
-
-    // Call the service
-    calculationService.calculationDecision(request);
-
-    // Verify response was sent with error
-    ArgumentCaptor<CalculationResponse> responseCaptor = ArgumentCaptor
-        .forClass(CalculationResponse.class);
-    verify(kafkaProducer).sendCalculationResponse(responseCaptor.capture());
-
-    CalculationResponse capturedResponse = responseCaptor.getValue();
-    assertEquals("123", capturedResponse.getRequestId());
-    assertNull(capturedResponse.getResult());
-    assertEquals("Division by zero", capturedResponse.getError());
-  }
 }

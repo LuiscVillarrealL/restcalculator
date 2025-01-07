@@ -1,5 +1,6 @@
 package com.lcvl.challenge.calculator.messaging;
 
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
@@ -35,8 +36,12 @@ public class KafkaMessageProducer {
    * @param request the request
    */
   public void sendCalculationResponse(CalculationResponse request) {
-
-    log.info("Sending message from {} topic {}", resultTopic, request);
+    
+    MDC.put("requestId", request.getRequestId());
+    log.info("Sending message from {} topic {}", resultTopic, request);    
+    MDC.clear();
+    
+    
     kafkaTemplate.send(resultTopic, request);
   }
 
