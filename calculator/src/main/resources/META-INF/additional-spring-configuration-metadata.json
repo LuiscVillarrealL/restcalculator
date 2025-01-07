@@ -8,5 +8,10 @@
     "name": "kafka.request-topic",
     "type": "java.lang.String",
     "description": "Topic for request of operation'"
+  },
+  {
+    "name": "mdc.correlation.id",
+    "type": "java.lang.String",
+    "description": "Id for mdc propagation"
   }
 ]}

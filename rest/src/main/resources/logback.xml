@@ -6,10 +6,16 @@
     <encoder>
       <pattern>
         <!-- Date, Thread, Log level, RequestId, Message -->
-%d{yyyy-MM-dd'T'HH:mm:ss} [%t] LEVEL=%-5level TRACEID=%replace(%X{requestId:-null}){'null', ''} | %m%n%ex
-      </pattern>
-    </encoder>
+%d{yyyy-MM-dd'T'HH:mm:ss} [%t] LEVEL=%-5level TRACEID=%replace(%X{Request-ID:-null}){'null', ''} | %m%n%ex
+      </pattern>    </encoder>
   </appender>
+
+  <!-- Root Logger definition -->
+  <root level="INFO">
+    <appender-ref ref="STDOUT"/>
+  </root>
+
+
 
   <!-- Rolling File Appender -->
   <appender name="ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">
@@ -23,16 +29,13 @@
     </rollingPolicy>
     
     <encoder>
-      <pattern>
-        <!-- Date, Thread, Log level, RequestId, Message -->
-%d{yyyy-MM-dd'T'HH:mm:ss.SSS'Z'} [%t] LEVEL=%-5level TRACEID=%replace(%X{requestId:-null}){'null', ''} | %m%n%ex
-      </pattern>
+      <pattern>%d{yyyy-MM-dd'T'HH:mm:ss} [%t] LEVEL=%-5level TRACEID=%replace(%X{Request-ID:-null}){'null', ''} | %m%n%ex
+</pattern>
     </encoder>
   </appender>
 
   <!-- Root Logger -->
   <root level="INFO">
-    <appender-ref ref="STDOUT"/>
     <appender-ref ref="ROLLING"/>
   </root>
 
