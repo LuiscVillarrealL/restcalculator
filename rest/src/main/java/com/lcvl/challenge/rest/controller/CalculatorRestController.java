@@ -1,5 +1,6 @@
 package com.lcvl.challenge.rest.controller;
 
+import java.math.BigDecimal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import com.lcvl.challenge.common.util.OperationEnum;
 import com.lcvl.challenge.rest.dto.ResultDto;
+import com.lcvl.challenge.rest.exceptions.DividingByZeroException;
 import com.lcvl.challenge.rest.util.CalculationServiceHelper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -45,8 +47,9 @@ public class CalculatorRestController {
   @Operation(summary = "Add two numbers", description = "Returns the sum of num1 and num2.")
   @GetMapping(value = "/sum")
   @ResponseStatus(HttpStatus.OK)
-  public ResponseEntity<ResultDto> getSum(@RequestParam char[] a, @RequestParam char[] b,
-      @RequestHeader(value = "Request-ID", required = false) String requestId) {
+  public ResponseEntity<ResultDto> getSum(@RequestParam BigDecimal a, @RequestParam BigDecimal b,
+      @RequestHeader(value = "Request-ID", required = false) String requestId)
+      throws DividingByZeroException {
 
     return calculationServiceHelper.handleCalculationRequest(a, b, requestId, OperationEnum.SUM);
 
@@ -65,8 +68,10 @@ public class CalculatorRestController {
       description = "Returns the substractions of num1 and num2.")
   @GetMapping(value = "/sub")
   @ResponseStatus(HttpStatus.OK)
-  public ResponseEntity<ResultDto> getSubstraction(@RequestParam char[] a, @RequestParam char[] b,
-      @RequestHeader(value = "Request-ID", required = false) String requestId) {
+  public ResponseEntity<ResultDto> getSubstraction(@RequestParam BigDecimal a,
+      @RequestParam BigDecimal b,
+      @RequestHeader(value = "Request-ID", required = false) String requestId)
+      throws DividingByZeroException {
 
     return calculationServiceHelper.handleCalculationRequest(a, b, requestId,
         OperationEnum.SUBTRACT);
@@ -85,8 +90,10 @@ public class CalculatorRestController {
       description = "Returns the multiplication of num1 and num2.")
   @GetMapping(value = "/multi")
   @ResponseStatus(HttpStatus.OK)
-  public ResponseEntity<ResultDto> getMultiplication(@RequestParam char[] a, @RequestParam char[] b,
-      @RequestHeader(value = "Request-ID", required = false) String requestId) {
+  public ResponseEntity<ResultDto> getMultiplication(@RequestParam BigDecimal a,
+      @RequestParam BigDecimal b,
+      @RequestHeader(value = "Request-ID", required = false) String requestId)
+      throws DividingByZeroException {
 
     return calculationServiceHelper.handleCalculationRequest(a, b, requestId,
         OperationEnum.MULTIPLY);
@@ -99,12 +106,15 @@ public class CalculatorRestController {
    * @param b the num 2
    * @param requestId the request id
    * @return the division
+   * @throws DividingByZeroException  dividing by zero exception
    */
   @Operation(summary = "Divide two numbers", description = "Returns the division of num1 and num2.")
   @GetMapping(value = "/div")
   @ResponseStatus(HttpStatus.OK)
-  public ResponseEntity<ResultDto> getDivision(@RequestParam char[] a, @RequestParam char[] b,
-      @RequestHeader(value = "Request-ID", required = false) String requestId) {
+  public ResponseEntity<ResultDto> getDivision(@RequestParam BigDecimal a,
+      @RequestParam BigDecimal b,
+      @RequestHeader(value = "Request-ID", required = false) String requestId)
+      throws DividingByZeroException {
 
     return calculationServiceHelper.handleCalculationRequest(a, b, requestId, OperationEnum.DIVIDE);
   }

@@ -1,5 +1,7 @@
 package com.lcvl.challenge;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
@@ -28,11 +30,12 @@ import com.lcvl.challenge.common.dto.CalculationRequest;
 import com.lcvl.challenge.common.dto.CalculationResponse;
 import com.lcvl.challenge.common.util.OperationEnum;
 import com.lcvl.challenge.rest.controller.CalculatorRestController;
+import com.lcvl.challenge.rest.exceptions.DividingByZeroException;
 import com.lcvl.challenge.rest.messaging.KafkaMessageConsumer;
 import com.lcvl.challenge.rest.messaging.KafkaMessageProducer;
 
 @SpringBootTest(
-    classes = {RestApplication.class},
+    classes = { RestApplication.class },
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource(locations = "classpath:application.properties")
 @Testcontainers
@@ -175,20 +178,14 @@ class CalculatorRestControllerIntegrationTest {
   }
 
   @Test
-  void testGetDivisionByZero() throws Exception {
-    // Arrange
+  void testGetDivisionByZeroDirect() {
     String requestId = "test-div-zero-id";
 
-    // Mocking Kafka Consumer behavior for an error scenario
-    when(kafkaMessageConsumer.getResponseById(eq(requestId), anyLong()))
-        .thenThrow(new ArithmeticException("Division by zero"));
+    DividingByZeroException exception = assertThrows(DividingByZeroException.class, () -> {
+      calculatorRestController.getDivision(BigDecimal.TEN, BigDecimal.ZERO, requestId);
+    });
 
-    // Act & Assert
-    mockMvc
-        .perform(get("/api/calculator/div").param("a", "10").param("b", "0")
-            .header("Request-ID", requestId).contentType(MediaType.APPLICATION_JSON))
-        .andExpect(status().is4xxClientError())
-        .andExpect(jsonPath("$.result").value("Division by zero is not allowed"));
+    assertEquals("Division by zero is not allowed", exception.getMessage());
   }
 
   @Test

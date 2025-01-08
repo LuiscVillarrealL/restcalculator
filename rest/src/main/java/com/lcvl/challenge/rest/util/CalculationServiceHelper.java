@@ -11,6 +11,7 @@ import com.lcvl.challenge.common.dto.CalculationRequest;
 import com.lcvl.challenge.common.dto.CalculationResponse;
 import com.lcvl.challenge.common.util.OperationEnum;
 import com.lcvl.challenge.rest.dto.ResultDto;
+import com.lcvl.challenge.rest.exceptions.DividingByZeroException;
 import com.lcvl.challenge.rest.messaging.KafkaMessageConsumer;
 import com.lcvl.challenge.rest.messaging.KafkaMessageProducer;
 import lombok.extern.slf4j.Slf4j;
@@ -41,9 +42,10 @@ public class CalculationServiceHelper {
    * @param requestId the request id
    * @param operation the operation
    * @return the response entity
+   * @throws DividingByZeroException dividing by zero exception
    */
-  public ResponseEntity<ResultDto> handleCalculationRequest(char[] num1, char[] num2,
-      String requestId, OperationEnum operation) {
+  public ResponseEntity<ResultDto> handleCalculationRequest(BigDecimal num1, BigDecimal num2,
+      String requestId, OperationEnum operation) throws DividingByZeroException {
 
     if (requestId == null || requestId.isEmpty()) {
       requestId = MDC.get(correlationId);
@@ -51,25 +53,19 @@ public class CalculationServiceHelper {
 
     try {
 
-      // Validate if num1 and num2 are valid BigDecimal
-      BigDecimal number1 = new BigDecimal(num1);
-      BigDecimal number2 = new BigDecimal(num2);
-
       // Check for division by zero
-      if (operation == OperationEnum.DIVIDE && number2.compareTo(BigDecimal.ZERO) == 0) {
-        log.warn("Operation: division, Division by zero attempted with num1={}, num2={}", number1,
-            number2);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).header(correlationId, requestId)
-            .body(new ResultDto("Division by zero is not allowed"));
-
+      if (operation == OperationEnum.DIVIDE && num2.compareTo(BigDecimal.ZERO) == 0) {
+        log.warn("Operation: division, Division by zero attempted with num1={}, num2={}", num1,
+            num2);
+        throw new DividingByZeroException("Division by zero is not allowed");
       }
 
       // Log the request
-      log.info("Operation: {}, Operands: num1={}, num2={}", operation.name(), number1, number2);
+      log.info("Operation: {}, Operands: num1={}, num2={}", operation.name(), num1, num2);
 
       // Send the request to the Kafka topic with the generated Request-ID
       kafkaMessageProducer
-          .sendCalculationRequest(new CalculationRequest(requestId, operation, number1, number2));
+          .sendCalculationRequest(new CalculationRequest(requestId, operation, num1, num2));
 
       return waitForResponse(requestId);
 
