@@ -1,4 +1,4 @@
-name: Java CI with Maven
+name: Java CI with Maven and Docker Integration Test
 
 on:
   push:
@@ -32,19 +32,41 @@ jobs:
         distribution: 'temurin'
         cache: maven
         
-        
-      # Set up Docker
     - name: Set up Docker
       uses: docker/setup-buildx-action@v2
 
-    - name: Run Docker Compose
+    - name: Build and Run with Docker Compose
       run: |
-        docker compose up -d
-        # Add a wait for Kafka to be ready
-        until docker exec broker kafka-topics --bootstrap-server localhost:9092 --list; do
-          echo "Waiting for Kafka to be ready...";
-          sleep 2;
-        done;
+        docker compose up --build -d
+        echo "Waiting for services to stabilize..."
+        sleep 15
+        docker compose ps
 
-    - name: Clean and Build with Maven
-      run: mvn clean package --file pom.xml
+    # Integration Test: Call the REST API from the frontend or backend directly
+    - name: Integration Test - REST API Health Check
+  run: |
+    echo "Running Integration Test..."
+    sleep 20  # Wait for services to be ready
+    
+    # Perform the API request and capture the full response
+    RESPONSE=$(curl -s http://localhost:8081/api/calculator/sum?num1=4&num2=5)
+    
+    echo "Response: $RESPONSE"
+    
+    # Extract the 'result' value using jq
+    RESULT=$(echo $RESPONSE | jq -r '.result')
+    
+    echo "Extracted Result: $RESULT"
+    
+    # Validate if the result is equal to 9
+    if [[ "$RESULT" == "9" ]]; then
+      echo "Integration Test Passed. Result is correct."
+    else
+      echo "Integration Test Failed. Expected 9 but got $RESULT"
+      exit 1
+    fi
+
+
+    - name: Tear Down Docker Containers
+      if: always()
+      run: docker compose down
