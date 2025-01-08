@@ -44,17 +44,27 @@ jobs:
 
     # Integration Test: Call the REST API from the frontend or backend directly
     - name: Integration Test - REST API Health Check
-      run: |
-        echo "Running Integration Test..."
-        sleep 10  # Wait for services to be fully ready
-        RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8081/api/calculator/sum?num1=4&num2=5)
-        
-        if [ "$RESPONSE" -eq 200 ]; then
-          echo "Integration Test Passed"
-        else
-          echo "Integration Test Failed with status $RESPONSE"
-          exit 1
-        fi
+  run: |
+    echo "Running Integration Test..."
+    sleep 20  # Wait for services to be ready
+    
+    # Perform the API request and capture the full response
+    RESPONSE=$(curl -s http://localhost:8081/api/calculator/sum?num1=4&num2=5)
+    
+    echo "Response: $RESPONSE"
+    
+    # Extract the 'result' value using jq
+    RESULT=$(echo $RESPONSE | jq -r '.result')
+    
+    echo "Extracted Result: $RESULT"
+    
+    # Validate if the result is equal to 9
+    if [[ "$RESULT" == "9" ]]; then
+      echo "Integration Test Passed. Result is correct."
+    else
+      echo "Integration Test Failed. Expected 9 but got $RESULT"
+      exit 1
+    fi
 
 
     - name: Tear Down Docker Containers
