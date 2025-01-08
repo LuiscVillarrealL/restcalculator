@@ -70,7 +70,7 @@ class CalculatorRestControllerIntegrationTest {
 
     // Act & Assert
     mockMvc
-        .perform(get("/api/calculator/sum").param("num1", "10").param("num2", "5")
+        .perform(get("/api/calculator/sum").param("a", "10").param("b", "5")
             .header("Request-ID", requestId).contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk()).andExpect(jsonPath("$.result").value("15"))
         .andExpect(header().string("Request-ID", requestId));
@@ -100,7 +100,7 @@ class CalculatorRestControllerIntegrationTest {
 
     // Act & Assert
     mockMvc
-        .perform(get("/api/calculator/sub").param("num1", "10").param("num2", "5")
+        .perform(get("/api/calculator/sub").param("a", "10").param("b", "5")
             .header("Request-ID", requestId).contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk()).andExpect(jsonPath("$.result").value("5"))
         .andExpect(header().string("Request-ID", requestId));
@@ -129,7 +129,7 @@ class CalculatorRestControllerIntegrationTest {
 
     // Act & Assert
     mockMvc
-        .perform(get("/api/calculator/multi").param("num1", "10").param("num2", "5")
+        .perform(get("/api/calculator/multi").param("a", "10").param("b", "5")
             .header("Request-ID", requestId).contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk()).andExpect(jsonPath("$.result").value("50"))
         .andExpect(header().string("Request-ID", requestId));
@@ -158,7 +158,7 @@ class CalculatorRestControllerIntegrationTest {
 
     // Act & Assert
     mockMvc
-        .perform(get("/api/calculator/div").param("num1", "10").param("num2", "5")
+        .perform(get("/api/calculator/div").param("a", "10").param("b", "5")
             .header("Request-ID", requestId).contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk()).andExpect(jsonPath("$.result").value("2"))
         .andExpect(header().string("Request-ID", requestId));
@@ -185,7 +185,7 @@ class CalculatorRestControllerIntegrationTest {
 
     // Act & Assert
     mockMvc
-        .perform(get("/api/calculator/div").param("num1", "10").param("num2", "0")
+        .perform(get("/api/calculator/div").param("a", "10").param("b", "0")
             .header("Request-ID", requestId).contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().is4xxClientError())
         .andExpect(jsonPath("$.result").value("Division by zero is not allowed"));
@@ -201,7 +201,7 @@ class CalculatorRestControllerIntegrationTest {
 
     // Act & Assert
     mockMvc
-        .perform(get("/api/calculator/sum").param("num1", "10").param("num2", "5")
+        .perform(get("/api/calculator/sum").param("a", "10").param("b", "5")
             .header("Request-ID", requestId).contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isRequestTimeout())
         .andExpect(jsonPath("$.result").value("Timeout waiting for response"));

@@ -1,0 +1,35 @@
+/* Outer container to center the calculator and add spacing from the top */
+.calc-container {
+    text-align: center;      /* centers child elements horizontally */
+    margin-top: 2rem;        /* adds space at the top */
+  }
+  
+  /* Inline-flex row for the input fields */
+  .calc-row {
+    display: inline-flex;    /* places fields side by side */
+    gap: 1rem;               /* spacing between each field */
+    align-items: center;     /* aligns labels/inputs vertically in the middle */
+  }
+  
+  /* Each individual field in the row */
+  .calc-field {
+    display: flex;
+    flex-direction: column;  /* label on top, input below */
+    align-items: flex-start; /* align text to the left inside each field */
+  }
+  
+  /* Container for loading/error messages */
+  .calc-messages {
+    margin-top: 1rem;
+  }
+  
+  /* Class for error text styling */
+  .error-message {
+    color: red;
+  }
+  
+  /* Center the Calculate button with spacing on top */
+  .calc-button {
+    margin-top: 1rem;
+  }
+  

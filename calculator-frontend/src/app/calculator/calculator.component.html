@@ -1,0 +1,65 @@
+<div class="calc-container">
+  <!-- Row container to place inputs side-by-side -->
+  <div class="calc-row">
+    
+    <!-- Number 1 -->
+    <div class="calc-field">
+      <label for="input1">Number 1:</label><br />
+      <input
+        id="input1"
+        type="number"
+        (input)="number1 = $any($event.target).value"
+      />
+    </div>
+
+
+
+    <!-- Operation -->
+    <div class="calc-field">
+      <label for="operationSelect">Operation:</label><br />
+      <select
+        id="operationSelect"
+        [(ngModel)]="operation"
+      >
+        <option value="sum">+</option>
+        <option value="sub">-</option>
+        <option value="multi">*</option>
+        <option value="div">/</option>
+      </select>
+    </div>
+
+        <!-- Number 2 -->
+        <div class="calc-field">
+          <label for="input2">Number 2:</label><br />
+          <input
+            id="input2"
+            type="number"
+            (input)="number2 = $any($event.target).value"
+          />
+        </div>
+
+    <!-- Result -->
+    <div class="calc-field">
+      <label for="result">Result:</label><br />
+      <input id="result" type="text" [value]="result" readonly />
+    </div>
+  </div>
+
+  <!-- Loading / error messages below inputs -->
+  <div class="calc-messages">
+    <!-- Show loading only if isFetching is true and there's no error -->
+    <div *ngIf="isFetching() && !error()">
+      <p>Loading...</p>
+    </div>
+
+    <!-- Show the error if it exists -->
+    <div *ngIf="error()">
+      <p class="error-message">Error: {{ error() }}</p>
+    </div>
+  </div>
+
+  <!-- Calculate button below everything -->
+  <div class="calc-button">
+    <button (click)="onCalculate()">Calculate</button>
+  </div>
+</div>
