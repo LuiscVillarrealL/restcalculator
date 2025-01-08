@@ -49,7 +49,7 @@ jobs:
         sleep 20  # Wait for services to be ready
         
         # Perform the API request and capture the full response
-        RESPONSE=$(curl -s http://localhost:8081/api/calculator/sum?num1=4&num2=5)
+        RESPONSE=$(curl -s http://localhost:8081/api/calculator/sum?a=4&b=5)
         
         echo "Response: $RESPONSE"
         
