@@ -49,7 +49,7 @@ jobs:
         sleep 20  # Wait for services to be ready
         
         # Perform the API request and capture the full response
-        RESPONSE=$(curl -s http://localhost:8081/api/calculator/sum?a=4&b=5)
+        RESPONSE=$(curl -s http://localhost:8081/api/calculator/sum?a=2&b=5)
         
         echo "Response: $RESPONSE"
         
@@ -58,11 +58,11 @@ jobs:
         
         echo "Extracted Result: $RESULT"
         
-        # Validate if the result is equal to 9
-        if [[ "$RESULT" == "9" ]]; then
+        # Validate if the result is equal to 7
+        if [[ "$RESULT" == "7" ]]; then
           echo "Integration Test Passed. Result is correct."
         else
-          echo "Integration Test Failed. Expected 9 but got $RESULT"
+          echo "Integration Test Failed. Expected 7 but got $RESULT"
           exit 1
         fi
 
