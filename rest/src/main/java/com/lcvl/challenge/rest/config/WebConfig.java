@@ -5,10 +5,18 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+/**
+ * The Class WebConfig.
+ */
 @Configuration
 
 public class WebConfig {
 
+  /**
+   * Cors config.
+   *
+   * @return the web mvc configurer
+   */
   @Bean
   public WebMvcConfigurer corsConfig() {
 
@@ -24,6 +32,5 @@ public class WebConfig {
     };
 
   }
-
 
 }
