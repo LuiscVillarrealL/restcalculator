@@ -28,7 +28,7 @@ public class KafkaMessageProducer {
    * @param resultTopic the result topic
    */
   public KafkaMessageProducer(KafkaTemplate<String, CalculationResponse> kafkaTemplate,
-      @Value("${kafka.result-topic:default-result-topic}") String resultTopic) {
+      @Value("${kafka.result-topic}") String resultTopic) {
     this.kafkaTemplate = kafkaTemplate;
     this.resultTopic = resultTopic;
   }
