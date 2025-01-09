@@ -27,6 +27,7 @@ import com.lcvl.challenge.common.dto.CalculationRequest;
 import com.lcvl.challenge.common.dto.CalculationResponse;
 import com.lcvl.challenge.common.util.OperationEnum;
 
+
 /**
  * The Class KafkaIntegrationTest.
  */

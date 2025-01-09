@@ -1,16 +1,17 @@
+---
 name: Java CI with Maven and Docker Integration Test
-
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - main
   pull_request:
-    branches: [ "main" ]
-
+    branches:
+      - main
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
+
     - name: Check GITHUB_TOKEN availability
       run: |
         if [ -z "${{ secrets.GITHUB_TOKEN }}" ]; then
@@ -43,13 +44,18 @@ jobs:
         sleep 15
         docker compose ps
 
+    - name: Install jq
+      run: sudo apt-get install -y jq
+      
+      
     - name: Integration Test - REST API Health Check
       run: |
         echo "Running Integration Test..."
         sleep 20  # Wait for services to be ready
         
         # Perform the API request and capture the full response
-        RESPONSE=$(curl -s http://localhost:8081/api/calculator/sum?num1=4&num2=5)
+        URL="http://localhost:8081/api/calculator/sum?a=4&b=5"
+        RESPONSE=$(curl -s "$URL")
         
         echo "Response: $RESPONSE"
         
@@ -65,6 +71,7 @@ jobs:
           echo "Integration Test Failed. Expected 9 but got $RESULT"
           exit 1
         fi
+
 
     - name: Tear Down Docker Containers
       if: always()
