@@ -235,6 +235,26 @@ mvn spring-boot:run
 * The project includes Swagger/OpenAPI integration for exploring and testing the API.
 * After running the application, access Swagger UI at: http://localhost:8081/swagger-ui.html.
 
+### Code Quality and Documentation
+
+#### 1. Checkstyle
+* Checkstyle is used to enforce a consistent coding style and ensure code quality across the project.
+
+* The project uses a custom Checkstyle configuration based on the Google Checks standard with additional rules tailored for this project.
+
+* Configuration File:
+
+	* The custom rules are defined in google_checks_custom.xml.
+Features of the Custom Checkstyle Configuration:
+
+#### 2. JAutodoc for JavaDocs
+* JAutodoc is used to automate the generation of JavaDoc comments for classes, methods, and fields.
+
+* Features:
+
+	* Automatically generates JavaDoc stubs for missing documentation.
+	* Encourages consistent and thorough documentation throughout the codebase
+
 ### Angular Frontend
 * The Angular frontend provides a simple interface to interact with the calculator API.
 * Access the frontend at:
