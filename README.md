@@ -14,6 +14,7 @@ RestCalculator is a Spring Boot multi-module project designed to provide a RESTf
 - [Installation](#installation)
 - [Modules](#modules)
 - [Features](#features)
+- [Other Technical Features](#other-technical-features)
 - [Dependencies](#dependencies)
 - [Configuration](#configuration)
 - [REST API Endpoints](#rest-api-endpoints)
@@ -148,6 +149,41 @@ mvn spring-boot:run
 * Angular-based frontend for interacting with the API.
 * Test containers for integration testing.
 
+## Other Technical Features
+#### 1. Logging with SLF4J
+* The project uses SLF4J (Simple Logging Facade for Java) with Logback as the logging implementation.
+
+* Logging is configured to write logs both to the console and a file for better traceability and persistence.
+
+* The log file is located at:
+
+	* ```logs/application.log``` (relative to the working directory where the application is run).
+* Example of a log entry:
+		
+	```yaml
+2025-01-07T21:51:45 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] LEVEL=INFO TRACEID=272daf88-9168-4b66-9ad3-042c70b5a32f | Sending message from calculation-result-topic topic CalculationResponse(requestId=272daf88-9168-4b66-9ad3-042c70b5a32f, result=0.2, error=null)```
+
+#### 2. Unique Identifiers (RequestId)
+* Each request is assigned a unique identifier (RequestId) to:
+	* Enable better tracking of requests across services.
+	* Simplify debugging and correlation between logs and messages.
+	
+* RequestId Propagation:
+	* The RequestId is passed between services via HTTP headers and Kafka messages.
+	* This ensures consistent traceability for each request.
+
+*	How it Works:
+
+	* If a RequestId is not provided in the incoming request, one is automatically generated using UUID.
+	* The RequestId is added to the logging context and HTTP response headers for reference.
+	
+#### 3. MDC Propagation
+* Mapped Diagnostic Context (MDC) is used for adding contextual information (like RequestId) to logs dynamically.
+
+* MDC ensures that all logs within a given request are tagged with its unique RequestId, making it easy to filter and analyze logs.
+
+
+
 ## Dependencies
 * **Spring Boot 3.4.1**
 * **Kafka** for messaging
@@ -206,6 +242,15 @@ http://localhost:4200.
 * It supports:
 Adding, subtracting, multiplying, and dividing numbers.
 * Displaying results dynamically.
+
+### Kafka UI
+* The project includes a Kafka UI tool for monitoring Kafka topics, messages, and consumer groups.
+* Access the Kafka UI at:
+ http://localhost:8086.
+* Features of the Kafka UI:
+	* View and manage Kafka topics.
+	* Inspect consumer groups and their statuses.
+	* View messages in real-time.
 
 ## Future Features
 
