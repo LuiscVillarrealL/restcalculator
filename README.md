@@ -29,19 +29,7 @@ RestCalculator is a Spring Boot multi-module project designed to provide a RESTf
 - **Maven 3.x**
 - **Docker and Docker Compose**
 
-### Build Instructions
-Clone the repository and navigate to the root directory of the project:
-```bash
-git clone <repository-url>
-cd restcalculator
-```
-
-
-
-#### 1. Using Docker
-
-#### Prerequisites
-To run a Docker container, ensure the following are installed and properly configured on your system:
+To run Docker containers, ensure the following are installed and properly configured on your system:
 
 1. **Docker**:
    - Install Docker: Follow the instructions at [Docker Installation Guide](https://docs.docker.com/get-docker/).
@@ -69,6 +57,19 @@ To run a Docker container, ensure the following are installed and properly confi
 
 ---
 
+### Build Instructions
+Clone the repository and navigate to the root directory of the project:
+```bash
+git clone <repository-url>
+cd restcalculator
+```
+
+
+
+#### 1. Using Docker to build project
+
+
+
 
 To build and run:
 ```bash
@@ -80,8 +81,8 @@ To stop the containers:
 docker-compose down
 ```
 
-#### 2. Without Docker
-If Docker is not used, make the following adjustments:
+#### 2. Build project locally
+If Docker is not used to build the entire project (docker is still needed for kafka messages), make the following adjustments:
 
 ##### Configuration Changes
 In the application.properties file of the rest and calculator modules:
