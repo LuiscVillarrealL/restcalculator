@@ -237,6 +237,26 @@ mvn spring-boot:run
 * **Producer**: Does the calculation and sends the response to the rest module
 
 ## Extras
+
+### Continuous Integration and Testing with GitHub Actions
+* The project uses **GitHub Actions** to automate the build, test, and integration processes. The workflow file is defined in `.github/workflows/actions.yml`.
+*  Runs on pull requests targeting the main branch.
+
+#### Key Features
+1.  Automated Build:
+
+	* Sets up Java 21 and Docker for the environment.
+	* Builds the application using Docker Compose.
+	* Does unit and integration testing inside modules
+
+2. Integration Testing:
+
+	* A REST API endpoint (`/api/calculator/sum`) is tested to verify the application's functionality.
+
+3. Tear Down:
+
+	* Ensures Docker containers are stopped and removed after the test, even if the workflow fails.
+  
 ### Swagger API Documentation
 * The project includes Swagger/OpenAPI integration for exploring and testing the API.
 * After running the application, access Swagger UI at: http://localhost:8081/swagger-ui.html.
