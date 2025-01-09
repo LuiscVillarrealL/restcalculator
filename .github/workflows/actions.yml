@@ -44,13 +44,18 @@ jobs:
         sleep 15
         docker compose ps
 
+    - name: Install jq
+      run: sudo apt-get install -y jq
+      
+      
     - name: Integration Test - REST API Health Check
       run: |
         echo "Running Integration Test..."
         sleep 20  # Wait for services to be ready
         
         # Perform the API request and capture the full response
-        RESPONSE=$(curl -s http://localhost:8081/api/calculator/sum?a=4&b=5)
+        URL="http://localhost:8081/api/calculator/sum?a=4&b=5"
+        RESPONSE=$(curl -s "$URL")
         
         echo "Response: $RESPONSE"
         
