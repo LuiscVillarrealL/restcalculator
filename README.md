@@ -19,9 +19,8 @@ RestCalculator is a Spring Boot multi-module project designed to provide a RESTf
 - [REST API Endpoints](#rest-api-endpoints)
 - [Kafka Messaging Flow](#kafka-messaging-flow)
 - [Extras](#extras)
-- [Docker and Deployment](#docker-and-deployment)
-- [Testing](#testing)
-- [License](#license)
+- [Future Features](#future-features)
+
 
 ## Installation
 ### Prerequisites
@@ -36,7 +35,40 @@ git clone <repository-url>
 cd restcalculator
 ```
 
+
+
 #### 1. Using Docker
+
+#### Prerequisites
+To run a Docker container, ensure the following are installed and properly configured on your system:
+
+1. **Docker**:
+   - Install Docker: Follow the instructions at [Docker Installation Guide](https://docs.docker.com/get-docker/).
+   - Verify Docker is installed:
+     ```bash
+     docker --version
+     ```
+   - Ensure the Docker daemon is running.
+
+2. **Docker Compose** :
+   - Install Docker Compose: Follow the instructions at [Docker Compose Installation Guide](https://docs.docker.com/compose/install/).
+   - Verify Docker Compose is installed:
+     ```bash
+     docker-compose --version
+     ```
+
+3. **Resources for Docker**:
+   - Allocate sufficient CPU, memory, and disk space to Docker:
+     - Recommended: At least **2 CPUs**, **4GB RAM**, and **10GB disk space**.
+   - Configure these resources in the Docker Desktop application (if using Docker Desktop).
+
+4. **Kafka and Zookeeper Ports**:
+   - Ensure the following ports are available for Kafka, Zookeeper, and services:
+     - `2181`, `9092`, `29092`, `8081`, `8085`, and `8086`.
+
+---
+
+
 To build and run:
 ```bash
 docker-compose up --build
@@ -170,3 +202,49 @@ http://localhost:4200.
 * It supports:
 Adding, subtracting, multiplying, and dividing numbers.
 * Displaying results dynamically.
+
+## Future Features
+
+
+#### 1. Enhanced API Features
+* **Authentication and Authorization**:
+	* Integrate OAuth2, JWT, or API key-based authentication for secure API access.
+	* Role-based access control (RBAC) to restrict certain operations.
+* **Advanced Calculator Operations:**
+	* Add support for scientific calculations (e.g., trigonometry, logarithms, etc.).
+	* History of calculations per user or session.
+	* Support for batch calculations (e.g., an array of operations sent in a single request).
+
+
+#### 2. Frontend Enhancements
+* Enhanced UI/UX:
+	* Add a responsive design with Bootstrap or Material Design.
+
+
+#### 3. Database Integration
+* Persistent Storage:
+	* Store calculation history, user preferences, and logs in a database (e.g., MySQL, PostgreSQL, or MongoDB).
+
+#### 4. Performance and Scalability
+* Horizontal Scaling:
+	* Add support for Kubernetes or AWS ECS to scale services dynamically.
+* Load Testing and Optimization:
+	* Integrate tools like JMeter or Gatling to test the API under heavy loads.
+	* Optimize Kafka message handling for higher throughput.
+
+#### 5. Observability and Monitoring
+* Logging and Monitoring:
+	* Integrate Grafana and Prometheus.
+	* Add structured logging with JSON format for easier parsing.
+* Distributed Tracing
+	* Implement distributed tracing with tools like OpenTelemetry or Zipkin.
+* Health Checks:
+	* Add endpoints for service health and readiness probes for better observability.
+	
+#### 6. Security Improvements
+* Rate Limiting:
+	* Prevent abuse by limiting the number of requests per user or IP address.
+* Data Validation:
+	* Enhance input validation to prevent injection attacks or malformed data.
+
+* Add security
