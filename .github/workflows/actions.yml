@@ -11,56 +11,65 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Check GITHUB_TOKEN availability
-        run: |
-          if [ -z "${{ secrets.GITHUB_TOKEN }}" ]; then
-            echo "GITHUB_TOKEN is not set"
-            exit 1
-          else
-            echo "GITHUB_TOKEN is available"
-          fi
-      - name: Checkout the repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: Set up JDK 21
-        uses: actions/setup-java@v4
-        with:
-          java-version: "21"
-          distribution: temurin
-          cache: maven
-      - name: Set up Docker
-        uses: docker/setup-buildx-action@v2
-      - name: Build and Run with Docker Compose
-        run: |
-          docker compose up --build -d
-          echo "Waiting for services to stabilize..."
-          sleep 15
-          docker compose ps
-      - name: Integration Test - REST API Health Check
-  run: |
-    echo "Running Integration Test with wget..."
-    sleep 20  # Wait for services to be ready
 
-    # Perform the API request and capture the full response
-    RESPONSE=$(wget -qO- "http://localhost:8081/api/calculator/sum?a=2&b=5")
+    - name: Check GITHUB_TOKEN availability
+      run: |
+        if [ -z "${{ secrets.GITHUB_TOKEN }}" ]; then
+          echo "GITHUB_TOKEN is not set"
+          exit 1
+        else
+          echo "GITHUB_TOKEN is available"
+        fi
 
-    echo "Response: $RESPONSE"
+    - name: Checkout the repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
 
-    # Extract the 'result' value using jq
-    RESULT=$(echo $RESPONSE | jq -r '.result')
+    - name: Set up JDK 21
+      uses: actions/setup-java@v4
+      with:
+        java-version: '21'
+        distribution: 'temurin'
+        cache: maven
 
-    echo "Extracted Result: $RESULT"
+    - name: Set up Docker
+      uses: docker/setup-buildx-action@v2
 
-    # Validate if the result is equal to 7
-    if [[ "$RESULT" == "7" ]]; then
-      echo "Integration Test Passed. Result is correct."
-    else
-      echo "Integration Test Failed. Expected 7 but got $RESULT"
-      exit 1
-    fi
+    - name: Build and Run with Docker Compose
+      run: |
+        echo "Building and starting services with Docker Compose..."
+        docker compose up --build -d
+        echo "Waiting for services to stabilize..."
+        sleep 15
+        docker compose ps
+
+    - name: Integration Test - REST API Health Check
+      run: |
+        echo "Running Integration Test..."
+        sleep 20  # Wait for services to be ready
+        
+        # Perform the API request and capture the full response
+        RESPONSE=$(curl -s http://localhost:8081/api/calculator/sum?num1=4&num2=5)
+        
+        echo "Response: $RESPONSE"
+        
+        # Extract the 'result' value using jq
+        RESULT=$(echo $RESPONSE | jq -r '.result')
+        
+        echo "Extracted Result: $RESULT"
+        
+        # Validate if the result is equal to 9
+        if [[ "$RESULT" == "9" ]]; then
+          echo "Integration Test Passed. Result is correct."
+        else
+          echo "Integration Test Failed. Expected 9 but got $RESULT"
+          exit 1
+        fi
 
 
     - name: Tear Down Docker Containers
       if: always()
-      run: docker compose down
+      run: |
+        echo "Tearing down Docker containers..."
+        docker compose down
