@@ -217,8 +217,14 @@ mvn spring-boot:run
 `GET /api/calculator/div?a={num1}&b={num2}`
 
 
-	* **Example**:
-` http://localhost:8081/api/calculator/sum?a=2.0&b=7 `
+##### **Example**: 
+```http://localhost:8081/api/calculator/sum?a=2.0&b=7 ```
+##### **Response**: 
+
+```yaml
+{
+    "result": "9.0"
+}```
 
 ## Kafka Messaging Flow
 
@@ -234,6 +240,8 @@ mvn spring-boot:run
 ### Swagger API Documentation
 * The project includes Swagger/OpenAPI integration for exploring and testing the API.
 * After running the application, access Swagger UI at: http://localhost:8081/swagger-ui.html.
+
+
 
 ### Code Quality and Documentation
 
