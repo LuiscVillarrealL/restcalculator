@@ -1,70 +1,65 @@
+---
 name: Java CI with Maven and Docker Integration Test
-
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - main
   pull_request:
-    branches: [ "main" ]
-
+    branches:
+      - main
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Check GITHUB_TOKEN availability
-      run: |
-        if [ -z "${{ secrets.GITHUB_TOKEN }}" ]; then
-          echo "GITHUB_TOKEN is not set"
-          exit 1
-        else
-          echo "GITHUB_TOKEN is available"
-        fi
+      - name: Check GITHUB_TOKEN availability
+        run: |
+          if [ -z "${{ secrets.GITHUB_TOKEN }}" ]; then
+            echo "GITHUB_TOKEN is not set"
+            exit 1
+          else
+            echo "GITHUB_TOKEN is available"
+          fi
+      - name: Checkout the repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: "21"
+          distribution: temurin
+          cache: maven
+      - name: Set up Docker
+        uses: docker/setup-buildx-action@v2
+      - name: Build and Run with Docker Compose
+        run: |
+          docker compose up --build -d
+          echo "Waiting for services to stabilize..."
+          sleep 15
+          docker compose ps
+      - name: Integration Test - REST API Health Check
+  run: |
+    echo "Running Integration Test with wget..."
+    sleep 20  # Wait for services to be ready
 
-    - name: Checkout the repository
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
+    # Perform the API request and capture the full response
+    RESPONSE=$(wget -qO- "http://localhost:8081/api/calculator/sum?a=2&b=5")
 
-    - name: Set up JDK 21
-      uses: actions/setup-java@v4
-      with:
-        java-version: '21'
-        distribution: 'temurin'
-        cache: maven
-        
-    - name: Set up Docker
-      uses: docker/setup-buildx-action@v2
+    echo "Response: $RESPONSE"
 
-    - name: Build and Run with Docker Compose
-      run: |
-        docker compose up --build -d
-        echo "Waiting for services to stabilize..."
-        sleep 15
-        docker compose ps
+    # Extract the 'result' value using jq
+    RESULT=$(echo $RESPONSE | jq -r '.result')
 
-    # Integration Test: Call the REST API from the frontend or backend directly
-    - name: Integration Test - REST API Health Check
-      run: |  # This was the issue (indentation)
-        echo "Running Integration Test..."
-        sleep 20  # Wait for services to be ready
-        
-        # Perform the API request and capture the full response
-        RESPONSE=$(curl -s http://localhost:8081/api/calculator/sum?a=2&b=5)
-        
-        echo "Response: $RESPONSE"
-        
-        # Extract the 'result' value using jq
-        RESULT=$(echo $RESPONSE | jq -r '.result')
-        
-        echo "Extracted Result: $RESULT"
-        
-        # Validate if the result is equal to 7
-        if [[ "$RESULT" == "7" ]]; then
-          echo "Integration Test Passed. Result is correct."
-        else
-          echo "Integration Test Failed. Expected 7 but got $RESULT"
-          exit 1
-        fi
+    echo "Extracted Result: $RESULT"
+
+    # Validate if the result is equal to 7
+    if [[ "$RESULT" == "7" ]]; then
+      echo "Integration Test Passed. Result is correct."
+    else
+      echo "Integration Test Failed. Expected 7 but got $RESULT"
+      exit 1
+    fi
+
 
     - name: Tear Down Docker Containers
       if: always()
