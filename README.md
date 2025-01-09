@@ -241,6 +241,7 @@ mvn spring-boot:run
 * The project includes Swagger/OpenAPI integration for exploring and testing the API.
 * After running the application, access Swagger UI at: http://localhost:8081/swagger-ui.html.
 
+![Alt Text](./images/swagger.png)
 
 
 ### Code Quality and Documentation
@@ -271,6 +272,8 @@ http://localhost:4200.
 Adding, subtracting, multiplying, and dividing numbers.
 * Displaying results dynamically.
 
+![Alt Text](./images/frontend.png)
+
 ### Kafka UI
 * The project includes a Kafka UI tool for monitoring Kafka topics, messages, and consumer groups.
 * Access the Kafka UI at:
@@ -279,6 +282,8 @@ Adding, subtracting, multiplying, and dividing numbers.
 	* View and manage Kafka topics.
 	* Inspect consumer groups and their statuses.
 	* View messages in real-time.
+	
+![Alt Text](./images/kafkaUi.png)
 
 ## Future Features
 
