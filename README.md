@@ -221,10 +221,10 @@ mvn spring-boot:run
 ```http://localhost:8081/api/calculator/sum?a=2.0&b=7 ```
 ##### **Response**: 
 
-```yaml
+`
 {
     "result": "9.0"
-}```
+} `
 
 ## Kafka Messaging Flow
 
