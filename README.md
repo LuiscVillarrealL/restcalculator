@@ -180,6 +180,10 @@ mvn spring-boot:run
 * **Division**:
 `GET /api/calculator/div?a={num1}&b={num2}`
 
+
+	* **Example**:
+` http://localhost:8081/api/calculator/sum?a=2.0&b=7 `
+
 ## Kafka Messaging Flow
 
 #### Rest Module
