@@ -161,8 +161,7 @@ mvn spring-boot:run
 	* ```logs/application.log``` (relative to the working directory where the application is run).
 * Example of a log entry:
 		
-	```yaml
-2025-01-07T21:51:45 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] LEVEL=INFO TRACEID=272daf88-9168-4b66-9ad3-042c70b5a32f | Sending message from calculation-result-topic topic CalculationResponse(requestId=272daf88-9168-4b66-9ad3-042c70b5a32f, result=0.2, error=null)```
+	```2025-01-07T21:51:45 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] LEVEL=INFO TRACEID=272daf88-9168-4b66-9ad3-042c70b5a32f | Sending message from calculation-result-topic topic CalculationResponse(requestId=272daf88-9168-4b66-9ad3-042c70b5a32f, result=0.2, error=null)```
 
 #### 2. Unique Identifiers (RequestId)
 * Each request is assigned a unique identifier (RequestId) to:
