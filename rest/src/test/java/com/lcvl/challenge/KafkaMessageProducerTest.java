@@ -9,18 +9,19 @@ import org.junit.jupiter.api.Test;
 import org.springframework.kafka.core.KafkaTemplate;
 import com.lcvl.challenge.common.dto.CalculationRequest;
 import com.lcvl.challenge.common.util.OperationEnum;
-import com.lcvl.challenge.rest.messaging.KafkaMessageProducer;
+import com.lcvl.challenge.rest.messaging.RestKafkaMessageProducer;
 
 class KafkaMessageProducerTest {
 
-  private KafkaMessageProducer kafkaMessageProducer;
+  private RestKafkaMessageProducer kafkaMessageProducer;
   private KafkaTemplate<String, CalculationRequest> kafkaTemplate;
 
   @SuppressWarnings("unchecked")
   @BeforeEach
   void setUp() {
     kafkaTemplate = mock(KafkaTemplate.class); // Mock the KafkaTemplate
-    kafkaMessageProducer = new KafkaMessageProducer(kafkaTemplate, "test-request-topic");
+    kafkaMessageProducer = new RestKafkaMessageProducer(kafkaTemplate, "test-request-topic",
+        "test-id");
   }
 
   @Test
@@ -30,7 +31,7 @@ class KafkaMessageProducerTest {
         BigDecimal.TEN, BigDecimal.ONE);
 
     // Act: Call the method under test
-    kafkaMessageProducer.sendCalculationRequest(request);
+    kafkaMessageProducer.sendMessage(request, "test-id");
 
     // Assert: Verify that KafkaTemplate's send method was called with the correct arguments
     verify(kafkaTemplate, times(1)).send("test-request-topic", request);

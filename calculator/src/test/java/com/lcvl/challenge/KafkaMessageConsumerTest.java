@@ -10,7 +10,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.TestPropertySource;
-import com.lcvl.challenge.calculator.messaging.KafkaMessageConsumer;
+import com.lcvl.challenge.calculator.messaging.CalculatorKafkaMessageConsumer;
 import com.lcvl.challenge.calculator.service.CalculationService;
 import com.lcvl.challenge.common.dto.CalculationRequest;
 import com.lcvl.challenge.common.util.OperationEnum;
@@ -23,13 +23,12 @@ class KafkaMessageConsumerTest {
   private CalculationService calculationService;
 
   @InjectMocks
-  private KafkaMessageConsumer kafkaMessageConsumer;
+  private CalculatorKafkaMessageConsumer kafkaMessageConsumer;
 
   @BeforeEach
-  void setup() throws Exception {
-    Field field = KafkaMessageConsumer.class.getDeclaredField("correlationId");
-    field.setAccessible(true);
-    field.set(kafkaMessageConsumer, "Request-ID");
+  void setup() {
+    String correlationId = "Request-ID";
+    kafkaMessageConsumer = new CalculatorKafkaMessageConsumer(calculationService, correlationId);
   }
 
   @Test
