@@ -31,8 +31,8 @@ import com.lcvl.challenge.common.dto.CalculationResponse;
 import com.lcvl.challenge.common.util.OperationEnum;
 import com.lcvl.challenge.rest.controller.CalculatorRestController;
 import com.lcvl.challenge.rest.exceptions.DividingByZeroException;
-import com.lcvl.challenge.rest.messaging.KafkaMessageConsumer;
-import com.lcvl.challenge.rest.messaging.KafkaMessageProducer;
+import com.lcvl.challenge.rest.messaging.RestKafkaMessageConsumer;
+import com.lcvl.challenge.rest.messaging.RestKafkaMessageProducer;
 
 @SpringBootTest(
     classes = { RestApplication.class },
@@ -48,10 +48,10 @@ class CalculatorRestControllerIntegrationTest {
   private CalculatorRestController calculatorRestController;
 
   @MockitoBean
-  private KafkaMessageProducer kafkaMessageProducer;
+  private RestKafkaMessageProducer kafkaMessageProducer;
 
   @MockitoBean
-  private KafkaMessageConsumer kafkaMessageConsumer;
+  private RestKafkaMessageConsumer kafkaMessageConsumer;
 
   private MockMvc mockMvc;
 
@@ -80,7 +80,7 @@ class CalculatorRestControllerIntegrationTest {
 
     // Verify that KafkaProducer was called with the correct request
     ArgumentCaptor<CalculationRequest> captor = ArgumentCaptor.forClass(CalculationRequest.class);
-    verify(kafkaMessageProducer, times(1)).sendCalculationRequest(captor.capture());
+    verify(kafkaMessageProducer, times(1)).sendMessage(captor.capture(), eq(requestId));
 
     CalculationRequest capturedRequest = captor.getValue();
     assert capturedRequest != null;
@@ -110,7 +110,7 @@ class CalculatorRestControllerIntegrationTest {
 
     // Verify KafkaProducer
     ArgumentCaptor<CalculationRequest> captor = ArgumentCaptor.forClass(CalculationRequest.class);
-    verify(kafkaMessageProducer, times(1)).sendCalculationRequest(captor.capture());
+    verify(kafkaMessageProducer, times(1)).sendMessage(captor.capture(), eq(requestId));
 
     CalculationRequest capturedRequest = captor.getValue();
     assert capturedRequest.getNum1().equals(BigDecimal.TEN);
@@ -139,7 +139,7 @@ class CalculatorRestControllerIntegrationTest {
 
     // Verify KafkaProducer
     ArgumentCaptor<CalculationRequest> captor = ArgumentCaptor.forClass(CalculationRequest.class);
-    verify(kafkaMessageProducer, times(1)).sendCalculationRequest(captor.capture());
+    verify(kafkaMessageProducer, times(1)).sendMessage(captor.capture(), eq(requestId));
 
     CalculationRequest capturedRequest = captor.getValue();
     assert capturedRequest.getNum1().equals(BigDecimal.TEN);
@@ -168,7 +168,7 @@ class CalculatorRestControllerIntegrationTest {
 
     // Verify KafkaProducer
     ArgumentCaptor<CalculationRequest> captor = ArgumentCaptor.forClass(CalculationRequest.class);
-    verify(kafkaMessageProducer, times(1)).sendCalculationRequest(captor.capture());
+    verify(kafkaMessageProducer, times(1)).sendMessage(captor.capture(), eq(requestId));
 
     CalculationRequest capturedRequest = captor.getValue();
     assert capturedRequest.getNum1().equals(BigDecimal.TEN);

@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import com.lcvl.challenge.calculator.messaging.KafkaMessageProducer;
+import com.lcvl.challenge.calculator.messaging.CalculatorKafkaMessageProducer;
 import com.lcvl.challenge.common.dto.CalculationRequest;
 import com.lcvl.challenge.common.dto.CalculationResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -23,14 +23,14 @@ public class CalculationService {
    * @param kafkaProducer the kafka producer
    */
   public CalculationService(ArithmeticService arithmeticService,
-      KafkaMessageProducer kafkaProducer) {
+      CalculatorKafkaMessageProducer kafkaProducer) {
     this.arithmeticService = arithmeticService;
     this.kafkaProducer = kafkaProducer;
     this.correlationId = "Request-ID"; // Default value in case @Value injection fails
   }
 
   private final ArithmeticService arithmeticService;
-  private final KafkaMessageProducer kafkaProducer;
+  private final CalculatorKafkaMessageProducer kafkaProducer;
 
   @Value("${mdc.correlation.id")
   private String correlationId;
@@ -74,16 +74,18 @@ public class CalculationService {
       log.info("Calculation completed for request");
 
       MDC.clear();
-      kafkaProducer.sendCalculationResponse(
-          new CalculationResponse(calculationRequest.getRequestId(), result, null));
+      kafkaProducer.sendMessage(
+          new CalculationResponse(calculationRequest.getRequestId(), result, null),
+          calculationRequest.getRequestId());
 
     } catch (Exception e) {
       MDC.put(correlationId, calculationRequest.getRequestId());
       log.error("Error processing request: {}", e.getMessage(), e);
       MDC.clear();
 
-      kafkaProducer.sendCalculationResponse(
-          new CalculationResponse(calculationRequest.getRequestId(), null, e.getMessage()));
+      kafkaProducer.sendMessage(
+          new CalculationResponse(calculationRequest.getRequestId(), result, e.getMessage()),
+          calculationRequest.getRequestId());
 
     }
 

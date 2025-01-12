@@ -12,7 +12,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.util.ReflectionTestUtils;
-import com.lcvl.challenge.calculator.messaging.KafkaMessageProducer;
+import com.lcvl.challenge.calculator.messaging.CalculatorKafkaMessageProducer;
 import com.lcvl.challenge.common.dto.CalculationResponse;
 
 @ExtendWith(MockitoExtension.class)
@@ -22,24 +22,22 @@ class KafkaMessageProducerTest {
   @Mock
   private KafkaTemplate<String, CalculationResponse> kafkaTemplate;
 
-  @InjectMocks
-  private KafkaMessageProducer kafkaMessageProducer;
-  
+  private CalculatorKafkaMessageProducer kafkaMessageProducer;
+
   @BeforeEach
-  void setup() throws Exception {
-    Field field = KafkaMessageProducer.class.getDeclaredField("correlationId");
-    field.setAccessible(true);
-    field.set(kafkaMessageProducer, "Request-ID");
+  void setup() {
+    String resultTopic = "test-topic";
+    String correlationId = "Request-ID";
+    kafkaMessageProducer = new CalculatorKafkaMessageProducer(kafkaTemplate, resultTopic,
+        correlationId);
   }
 
   @Test
-  void testSendCalculationResponse() {
+  void testSendMessage() {
     CalculationResponse response = new CalculationResponse("123", BigDecimal.TEN, null);
-    String resultTopic = "test-topic";
-    ReflectionTestUtils.setField(kafkaMessageProducer, "resultTopic", resultTopic);
 
-    kafkaMessageProducer.sendCalculationResponse(response);
+    kafkaMessageProducer.sendMessage(response, "123");
 
-    verify(kafkaTemplate).send(resultTopic, response);
+    verify(kafkaTemplate).send("test-topic", response);
   }
 }

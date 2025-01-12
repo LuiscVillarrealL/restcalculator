@@ -12,8 +12,8 @@ import com.lcvl.challenge.common.dto.CalculationResponse;
 import com.lcvl.challenge.common.util.OperationEnum;
 import com.lcvl.challenge.rest.dto.ResultDto;
 import com.lcvl.challenge.rest.exceptions.DividingByZeroException;
-import com.lcvl.challenge.rest.messaging.KafkaMessageConsumer;
-import com.lcvl.challenge.rest.messaging.KafkaMessageProducer;
+import com.lcvl.challenge.rest.messaging.RestKafkaMessageConsumer;
+import com.lcvl.challenge.rest.messaging.RestKafkaMessageProducer;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -25,11 +25,11 @@ public class CalculationServiceHelper {
 
   /** The kafka message producer. */
   @Autowired
-  private KafkaMessageProducer kafkaMessageProducer;
+  private RestKafkaMessageProducer kafkaMessageProducer;
 
   /** The kafka message consumer. */
   @Autowired
-  private KafkaMessageConsumer kafkaMessageConsumer;
+  private RestKafkaMessageConsumer kafkaMessageConsumer;
 
   @Value("${mdc.correlation.id}")
   String correlationId;
@@ -64,8 +64,8 @@ public class CalculationServiceHelper {
       log.info("Operation: {}, Operands: num1={}, num2={}", operation.name(), num1, num2);
 
       // Send the request to the Kafka topic with the generated Request-ID
-      kafkaMessageProducer
-          .sendCalculationRequest(new CalculationRequest(requestId, operation, num1, num2));
+      kafkaMessageProducer.sendMessage(
+          new CalculationRequest(requestId, operation, num1, num2), requestId);
 
       return waitForResponse(requestId);
 

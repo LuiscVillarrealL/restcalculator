@@ -7,15 +7,15 @@ import java.math.BigDecimal;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import com.lcvl.challenge.common.dto.CalculationResponse;
-import com.lcvl.challenge.rest.messaging.KafkaMessageConsumer;
+import com.lcvl.challenge.rest.messaging.RestKafkaMessageConsumer;
 
 class KafkaMessageConsumerTest {
 
-  private KafkaMessageConsumer kafkaMessageConsumer;
+  private RestKafkaMessageConsumer kafkaMessageConsumer;
 
   @BeforeEach
   void setUp() {
-    kafkaMessageConsumer = new KafkaMessageConsumer();
+    kafkaMessageConsumer = new RestKafkaMessageConsumer("test-id");
   }
 
   @Test

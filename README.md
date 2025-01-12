@@ -87,7 +87,7 @@ If Docker is not used to build the entire project (docker is still needed for ka
 ##### Configuration Changes
 In the application.properties file of the rest and calculator modules:
 
-Replace the ```broker``` reference with ```localhost``` in the ```application.properties``` of the ```rest``` and ```calculator``` modules:
+Replace the ```broker:29092``` reference with ```localhost:9092``` in the ```application.properties``` of the ```rest``` and ```calculator``` modules:
 ```bash
 spring.kafka.bootstrap-servers=localhost:9092
 ```
