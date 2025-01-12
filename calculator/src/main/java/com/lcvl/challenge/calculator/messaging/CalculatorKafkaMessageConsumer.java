@@ -8,7 +8,6 @@ import com.lcvl.challenge.common.dto.CalculationRequest;
 import com.lcvl.challenge.common.messaging.BaseKafkaConsumer;
 import lombok.extern.slf4j.Slf4j;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class CalculatorKafkaMessageConsumer.
  */
