@@ -3,6 +3,8 @@
 ## Introduction
 RestCalculator is a Spring Boot multi-module project designed to provide a RESTful API for performing various calculator operations. The project leverages Kafka for messaging and follows a modular architecture for scalability and maintainability. An Angular-based frontend interacts with the backend services.
 
+![Alt Text](./images/Calculator.drawio.png)
+
 ### Project Structure
 - **Parent Module (`restcalculator`)** – Root module managing dependencies and submodules.
 - **Common Module (`common`)** – Shared classes and utilities.
